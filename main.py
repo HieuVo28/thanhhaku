@@ -3,6 +3,8 @@ import time
 import re
 import random
 import asyncio
+import aiohttp
+networkdead=False
 owobot_fuse = True
 seralin = False
 owobot_running=True
@@ -12,7 +14,7 @@ client=discord.Client()
 class bot:
   owoid=408785106942164992
   channel=
-  token=""
+  token="   "
   commands=[
     "owo hunt",
     "owo battle"
@@ -73,18 +75,20 @@ async def typing():
   y=True
   while y:
     with channelob.typing():
-      await asyncio.sleep(999999999)
+      await asyncio.sleep(999999)
 async def owobot():
   await client.wait_until_ready()
   await asyncio.sleep(2)
   channelob=client.get_channel(bot.channel)
   print(f"{at()}{bot.color.okgreen} [AÇILIYOR] {bot.color.reset} bot1 çağırıldı (owobot())")
-  global owobot_fuse, owobot_running, owobot_delay, owobot_sleep
+  global owobot_fuse, owobot_running, owobot_delay, owobot_sleep, networkdead
   while owobot_running:
+    try:
        if owobot_fuse:
         command=random.choice(bot.commands)
-        print(f"{at()}{bot.color.okblue} [SENT] {bot.color.reset} {command}")
         await channelob.send(command)
+        networkdead=False
+        print(f"{at()}{bot.color.okblue} [SENT] {bot.color.reset}")
         x=random.randint(owobot_delay[0], owobot_delay[1])
         print(f"{at()}{bot.color.okcyan} [BEKLİYOR] {bot.color.reset} bot1, {bot.color.warning}{bot.color.bold}{x}{bot.color.reset} saniye bekliyor")
         await asyncio.sleep(x)
@@ -94,21 +98,26 @@ async def owobot():
           if command == command2:
             await asyncio.sleep(13)
           command=command2
-          print(f"{at()}{bot.color.okblue} [SENT] {bot.color.reset} {command}")
+          print(f"{at()}{bot.color.okblue} [SENT] {bot.color.reset} ")
           await channelob.send(command)
           x=int(random.randint(int(owobot_sleep[0]), int(owobot_sleep[1])))
           print(f"{at()}{bot.color.okcyan} [BEKLİYOR] {bot.color.reset} bot1, {bot.color.warning}{bot.color.bold}{x}{bot.color.reset} saniye bekliyor")
           await asyncio.sleep(x)
           time.sleep(random.randint(100,999)/1000)
+    except aiohttp.client_exceptions.ClientOSError:
+     if not networkdead:
+      print(f"{at()}{bot.color.fail} [NETWORK UNAVAİLABLE] {bot.color.reset}")
+      networkdead=True
   print(f"{at()}{bot.color.fail} [SONLANDIRILDI] {bot.color.reset} bot1 çöktü / kapatıldı (owobot())")
   
   
 async def owodead():
+ try:
   await client.wait_until_ready()
   await asyncio.sleep(3)
   channelob=client.get_channel(bot.channel)
   print(f"{at()}{bot.color.okgreen} [AÇILIYOR] {bot.color.reset} bot3 çağırıldı (owodead())")
-  global owobot_fuse
+  global owobot_fuse, networkdead
   while owobot_running:
     if owobot_fuse:
         messages=0
@@ -120,7 +129,12 @@ async def owodead():
         if messages==0:
           exit()
           print('sigorta attı')
+        networkdead=False
   print(f"{at()}{bot.color.fail} [SONLANDIRILDI] {bot.color.reset} bot2 çöktü / kapatıldı (owodead())")
+ except aiohttp.client_exceptions.ClientOSError:
+     if not networkdead:
+      print(f"{at()}{bot.color.fail} [NETWORK UNAVAİLABLE] {bot.color.reset}")
+      networkdead=True
 async def owogems():
   global owobot_fuse, owobot_running
   await client.wait_until_ready()
