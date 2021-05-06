@@ -11,8 +11,8 @@ owobot_delay=[2,4]
 client=discord.Client()
 class bot:
   owoid=408785106942164992
-  channel=id of the channel here
-  token=" user token here "
+  channel=
+  token=""
   commands=[
     "owo hunt",
     "owo battle"
@@ -67,6 +67,13 @@ async def owobot2():
          print(f"{at()}{bot.color.okcyan} [BEKLİYOR] {bot.color.reset} bot2, {bot.color.warning}{bot.color.bold}{x}{bot.color.reset} saniye bekliyor")
          await asyncio.sleep(x)
   print(f"{at()}{bot.color.fail} [SONLANDIRILDI] {bot.color.reset} bot2 çöktü / kapatıldı (owobot2())")
+async def typing():
+  await client.wait_until_ready()
+  channelob=client.get_channel(bot.channel)
+  y=True
+  while y:
+    with channelob.typing():
+      await asyncio.sleep(999999999)
 async def owobot():
   await client.wait_until_ready()
   await asyncio.sleep(2)
@@ -83,7 +90,10 @@ async def owobot():
         await asyncio.sleep(x)
         time.sleep(random.randint(100,999)/1000)
         if owobot_fuse:
-          command=random.choice(bot.commands)
+          command2=random.choice(bot.commands)
+          if command == command2:
+            await asyncio.sleep(13)
+          command=command2
           print(f"{at()}{bot.color.okblue} [SENT] {bot.color.reset} {command}")
           await channelob.send(command)
           x=int(random.randint(int(owobot_sleep[0]), int(owobot_sleep[1])))
@@ -127,13 +137,12 @@ async def owogems():
        print(f"{at()}{bot.color.okcyan} [BEKLİYOR] {bot.color.reset} bot4, 2400 saniye bekliyor")
        await asyncio.sleep(2400)
 async def waitor():
+ global owobot_fuse
  y=True
  while y:
-  await asyncio.sleep(900)
-  owobot_fuse=False
+  await asyncio.sleep(random.randint(600, 900))
   print(f"{at()}{bot.color.warning} [BEKLİYOR] {bot.color.reset} bütün eylemler, 5 dk mola")
-  await asyncio.sleep(300)
-  owobot_fuse=True
+  time.sleep(random.randint(100,400))
 @client.event
 async def on_connect():
  bot_running=True
@@ -142,6 +151,21 @@ async def on_connect():
 @client.event
 async def on_message(message: discord.Message):
   global owobot_fuse, owobot_sleep, owobot_delay
+  if message.channel.id == bot.channel:
+    if message.author.id == bot.owoid:
+      #if message author is owobot
+      print(f"{at()}{bot.color.okblue} [owobot yanıtı] {bot.color.reset}")
+      if "(2/5)" in message.content:
+          exit()
+      if 'banned' in message.content:
+          owobot_fuse=False
+          print(f'{at()}{bot.color.fail} !!! [BANLANDI] !!! {bot.color.reset} {str(client.user)} owobotdan banlandı, eğer botun bir sorunu olduğunu düşüyorsanız https://github.com/sudo-do/auto-owo-bot adresinden sorun raporu açın')
+          exit()
+      if 'complete your captcha' in message.content:
+          owobot_fuse=False
+          print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   DOĞRULAMASI GEREKLİ {message.content[-6:]}')
+          exit()
+
   if message.channel.id == bot.channel:
     #if message is sent to owo channel
     if message.author.id == client.user.id:
@@ -166,24 +190,10 @@ async def on_message(message: discord.Message):
             print(f"{at()}{bot.color.okcyan} [UPDATE] owobot delay ({owobot_delay[0]} -> {mesaj[1]} | {owobot_delay[1]} -> {mesaj[2]})")
             owobot_delay = [ int(mesaj[1]), int(mesaj[2]) ]
 
-    elif message.author.id == bot.owoid:
-      #if message author is owobot
-      print(f"{at()}{bot.color.okblue} [owobot yanıtı] {bot.color.reset}")
-      if "(3/5)" in message.content:
-          exit()
-      if client.user.name in message.content:
-      #if owo bot speaks about us
-        if 'banned' in message.content:
-          exit()
-          owobot_fuse=False
-          print(f'{at()}{bot.color.fail} !!! [BANLANDI] !!! {bot.color.reset} {str(client.user)} owobotdan banlandı, eğer botun bir sorunu olduğunu düşüyorsanız https://github.com/sudo-do/auto-owo-bot adresinden sorun raporu açın')
-        elif 'complete your captcha' in message.content:
-          owobot_fuse=False
-          print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA DOĞRULAMASI GEREKLİ {message.content[-6:]}')
-          exit()
 client.loop.create_task(owobot())
-client.loop.create_task(owobot2())
+#client.loop.create_task(owobot2())
 client.loop.create_task(owodead())
-client.loop.create_task(owogems())
+#client.loop.create_task(owogems())
 client.loop.create_task(waitor())
+client.loop.create_task(typing())
 client.run(bot.token, bot=False)
