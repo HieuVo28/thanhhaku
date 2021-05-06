@@ -14,7 +14,7 @@ client=discord.Client()
 class bot:
   owoid=408785106942164992
   channel=
-  token="   "
+  token="ODE2NzkyMzEyMDI1NDQ4NDc0.YIPP2A.LP6BIcKWrmSyi84WZ1uEj1bWbyU"
   commands=[
     "owo hunt",
     "owo battle"
