@@ -4,7 +4,9 @@ auto play owo bot
 to set the speed of the bot write
 `x!i sleep {min} {max} (x!i sleep 15 20)`
 
-**With default values possibility of ban is 0%**
+**With default values possibility of ban is 0% for in 5 hours**
+**warn**: **Most of users banned after 7+ hours of botting.. keep that in mind**
+**warn**: **antiban is not working atm.. discord blocking the message.content for selfbots see open issues**
 
 to setup it write your token and the id of the channel into the file 
 
