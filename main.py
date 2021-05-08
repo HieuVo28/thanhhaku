@@ -1,4 +1,4 @@
-import discord
+import discum
 import time
 import re
 import random
