@@ -1,7 +1,9 @@
 # discord-selfbot-owo-bot
 auto play owo bot
 
-to set the speed of the bot write
+![GitHub All](https://img.shields.io/github/downloads/sudo-do/discord-selfbot-owo-bot/total?label=Total%20Downloads&style=for-the-badge)
+
+to set the speed of the bot wri
 `x!i sleep {min} {max} (x!i sleep 15 20)`
 
 **With default values possibility of ban is 0% for in 5 hours**
