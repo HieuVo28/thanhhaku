@@ -15,5 +15,3 @@ to set the speed of the bot wri
 to setup it write your token and the id of the channel into the file 
 
 just saying your account may get banned cuz ofself botting
-
-and im not updating/supporting this code
