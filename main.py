@@ -9,13 +9,13 @@ exitr=False
 once=False
 wbm=[12,16]
 class bot:
-  owoid=408785106942164992
+  owoid=408785106942164992 #user id of the owo bot
   channel=None
   token=""
   if token=="":
     token=input("token: ")
   if channel==None:
-    channel=input("channel ID: ")
+    channel=input("Channel ID: ")
   commands=[
     "owo hunt",
     "owo hunt",
@@ -58,10 +58,10 @@ def issuechecker():
       if "(2/5)" in str(msgonec):
           return "exit"
       if 'banned' in msgonec:
-          print(f'{at()}{bot.color.fail} !!! [BANLANDI] !!! {bot.color.reset} owobotdan banlandı, eğer botun bir sorunu olduğunu düşüyorsanız https://github.com/sudo-do/auto-owo-bot adresinden sorun raporu açın')
+          print(f'{at()}{bot.color.fail} !!! [BANLANDI] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on https://github.com/sudo-do/discord-selfbot-owo-bot/')
           return "exit"
       if 'complete your captcha' in msgonec:
-          print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   DOĞRULAMASI GEREKLİ {msgonec[-6:]}')
+          print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED {msgonec[-6:]}')
           return "exit"
 def runner():
         global wbm
@@ -132,20 +132,20 @@ def loopie():
         security()
         owopray()
         pray=time.time()
-      if time.time() - gem > random.randint(150, 330):
+      if time.time() - gem > random.randint(500, 1000):
         security()
         gems()
         gem=time.time()
       
-      if time.time() - main > random.randint(500, 900):
+      if time.time() - main > random.randint(1000, 1800):
         time.sleep(random.randint(150, 300))
         security ()
         main=time.time()
 @client.gateway.command
 def defination1(resp):
   global once
-  if resp.event.message:
-      if not once: #idk any other way to do this
+  if resp.event.ready_supplemental:
+      if not once:
         once=True
         lol=multiprocessing.Process(target=loopie)
         lol.start()
