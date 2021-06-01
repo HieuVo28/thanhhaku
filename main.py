@@ -1,11 +1,9 @@
 import discum
 import time
 import multiprocessing
-import asyncio
 import json
 import random
 import re
-exitr=False
 once=False
 wbm=[12,16]
 class bot:
@@ -20,19 +18,6 @@ class bot:
     "owo hunt",
     "owo hunt",
     "owo battle"
-    ]
-  funcom=[
-    "owo zoo",
-    "owo money",
-    "owo sell all",
-    "owo cf 2",
-    "owo sell uncommonweapons",
-    "owo sell commonweapons",
-    "owo sell epicweapons",
-    "owo sell mythicweapons",
-    "owo level",
-    "owo lb all",
-    "owo crate all",
     ]
   class color:
     purple = '\033[95m'
