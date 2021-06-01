@@ -4,6 +4,7 @@ import multiprocessing
 import json
 import random
 import re
+import os
 once=False
 wbm=[12,16]
 class bot:
@@ -29,6 +30,16 @@ class bot:
     reset = '\033[0m'
     bold = '\033[1m'
     underline = '\033[4m'
+    if os.name == "nt":
+      purple = ''
+      okblue = ''
+      okcyan = ''
+      okgreen = ''
+      warning = ''
+      fail = ''
+      reset = ''
+      bold = ''
+      underline = ''
 def at():
   return f'\033[0;43m{time.strftime("%d %b %Y %H:%M:%S", time.localtime())}\033[0;21m'
 client=discum.Client(token=bot.token, log=False)
