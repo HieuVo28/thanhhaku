@@ -2,7 +2,7 @@
 auto play owo bot
 
 ![GitHub All](https://img.shields.io/github/downloads/sudo-do/discord-selfbot-owo-bot/total?label=Total%20Downloads&style=for-the-badge)
-
+#Download(https://github.com/sudo-do/discord-selfbot-owo-bot/releases/)
 
 
 setup is quite simple you dont have to do anything special just run the file
