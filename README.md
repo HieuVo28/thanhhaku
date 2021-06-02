@@ -15,6 +15,6 @@ enter the id of the channel, if you don't know how to do that https://support.di
 
 its normal your *bot* can sleep after some time thats for not get banned from owo
 
-also there's a auto gem user, which is not perfect yet but works perfect
+also it automatically uses gemsz which is not perfect yet but works perfect
 
 feel free to open issues
