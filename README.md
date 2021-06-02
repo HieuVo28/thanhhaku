@@ -1,8 +1,10 @@
 # discord-selfbot-owo-bot
 auto play owo bot
 
-![GitHub All](https://img.shields.io/github/downloads/sudo-do/discord-selfbot-owo-bot/total?label=Total%20Downloads&style=for-the-badge)
-#Download(https://github.com/sudo-do/discord-selfbot-owo-bot/releases/)
+[![GitHub issues](https://img.shields.io/github/issues/sudo-do/discord-selfbot-owo-bot?label=Open%20%C4%B0ssues)](https://github.com/sudo-do/discord-selfbot-owo-bot/issues)
+[![GitHub forks](https://img.shields.io/github/forks/sudo-do/discord-selfbot-owo-bot)](https://github.com/sudo-do/discord-selfbot-owo-bot/network)
+[![GitHub stars](https://img.shields.io/github/stars/sudo-do/discord-selfbot-owo-bot)](https://github.com/sudo-do/discord-selfbot-owo-bot/stargazers)
+* ### [Download Latest Release](https://github.com/sudo-do/discord-selfbot-owo-bot/releases/latest)
 
 
 setup is quite simple you dont have to do anything special just run the file
