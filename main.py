@@ -143,7 +143,8 @@ def defination1(resp):
   if resp.event.ready_supplemental:
       if not once:
         once=True
-        lol=multiprocessing.Process(target=loopie)
-        lol.start()
-        #lol.join()
+        if __name__ == '__main__':
+          lol=multiprocessing.Process(target=loopie)
+          lol.start()
+          #lol.join()
 client.gateway.run()
