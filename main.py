@@ -12,7 +12,12 @@ class bot:
   channel=None
   token="default"
   if token=="default":
-    token=input("token: ")
+    while True:
+      token=input("token: ")
+      if token == "":
+        print("token cannot be empty"):
+      else:
+        break
   if channel==None:
     channel=input("Channel ID: ")
   commands=[
