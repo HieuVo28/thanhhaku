@@ -10,8 +10,8 @@ wbm=[12,16]
 class bot:
   owoid=408785106942164992 #user id of the owo bot
   channel=None
-  token=""
-  if token=="":
+  token="default"
+  if token=="default":
     token=input("token: ")
   if channel==None:
     channel=input("Channel ID: ")
