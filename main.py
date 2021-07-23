@@ -15,7 +15,7 @@ class bot:
     while True:
       token=input("token: ")
       if token == "":
-        print("token cannot be empty"):
+        print("token cannot be empty")
       else:
         break
   if channel==None:
