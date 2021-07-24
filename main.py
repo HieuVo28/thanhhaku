@@ -145,7 +145,6 @@ def loopie():
 @client.gateway.command
 def defination1(resp):
   global once
-  if resp.event.ready_supplemental:
       if not once:
         once=True
         if __name__ == '__main__':
