@@ -11,7 +11,7 @@ try:
 except:
   use_terminal=True
 once=False
-wbm=[12,16]
+wbm=[12,16] #random wait time range between 2 message
 update = 0
 class bot:
   owoid=408785106942164992 #user id of the owo bot
