@@ -11,27 +11,40 @@ try:
 except:
   use_terminal=True
 once=False
-wbm=[12,16] #random wait time range between 2 message
+wbm=[12,16]
 update = 0
 class bot:
   owoid=408785106942164992 #user id of the owo bot
 
-  with open('settings.json') as file:
-    data = json.load(file)
-    token = data["token"]
-    channel = data["channel"]
-  if token == "def":
-    token = input("please enter your dc token for once: ")
-    data["token"] = token
-    update = 1
-  if channel == "def":
-    channel = input("please enter the id of the channel: ")
-    data["channel"] = channel
-    update = 1
-
-  if update:
-    with open("settings.json", "w") as file:
-      json.dump(data, file)
+  with open('settings.json', "w+") as file:
+    try:
+      data = json.load(file)
+      token = data["token"]
+      channel = data["channel"]
+      proxy = data["proxy"]
+      proxyserver = data["proxy_"]["server"]
+      proxyport = data["proxy_"]["port"]
+    except:
+      temp={}
+      temp["token"] = input("please enter your dc token for once: ")
+      temp["channel"] = input("please enter the id of the channel: ")
+      while True:
+        temp["proxy"] = input("will you use proxy? [YES/NO]")
+        temp["proxy_"] = {}
+        if temp["proxy"].upper() == "YES":
+          temp["proxy_"]["server"] = input("Proxy server: ")
+          temp["proxy_"]["port"] = input("Proxy server port: ")
+          break
+        if temp["proxy"].upper() == "NO":
+          temp["proxy_"]["server"] = None
+          temp["proxy_"]["port"] = None
+          break
+      json.dump(temp, file)
+      token = temp["token"]
+      channel = temp["channel"]
+      proxy = temp["proxy"]
+      proxyserver = temp["proxy_"]["server"]
+      proxyport = temp["proxy_"]["port"]
   commands=[
     "owo hunt",
     "owo hunt",
@@ -64,7 +77,7 @@ def report_error(content):
     print(at(), content)
   else:
     messagebox.showerror("OWO bot cheat", content)
-client=discum_c844aef.Client(token=bot.token, log=False)
+client=discum_c844aef.Client(token=bot.token,proxy_host=bot.proxyserver, proxy_port=bot.proxyport, log=False)
 def issuechecker():
   msgs=client.getMessages(str(bot.channel), num=10)
   msgs=json.loads(msgs.text)
