@@ -30,11 +30,11 @@ from random import getrandbits
 
 import aiohttp
 
-from discord.context_properties import ContextProperties
-from discord.errors import HTTPException, Forbidden, NotFound, LoginFailure, DiscordServerError
-from discord.gateway import DiscordClientWebSocketResponse
-from discord.http import json_or_text
-from discord import utils
+from selfpy.context_properties import ContextProperties
+from selfpy.errors import HTTPException, Forbidden, NotFound, LoginFailure, DiscordServerError
+from selfpy.gateway import DiscordClientWebSocketResponse
+from selfpy.http import json_or_text
+from selfpy import utils
 
 log = logging.getLogger(__name__)
 
