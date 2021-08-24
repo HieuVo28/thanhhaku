@@ -4,6 +4,7 @@ import json
 import datetime
 import asyncio
 import requests
+import re
 #custom exception class
 class relogin(Exception):
     def __init__(self, message):
@@ -23,7 +24,7 @@ async def cheat():
             #wait till client ready
             await DCL.wait_until_ready()
             message = get_command_message()
-            while runtime_broker.is_running():
+            while  1:
                 message = nextmessage
                 nextmessage = get_command_message()
                 #send message to the channel
@@ -229,16 +230,111 @@ else:
         print("Unable to update config")
         print("Error: Unexpected error")
     
+def issuechecker(message):
+    #RETURN TRUE İF İSSUE
+    #RETURN FALSE IF SAFE   
 
+    ###CHECK WARNİNG AND BANNED STATUS
+    ##check if the user warned with captcha
+    if "**"+DCL.user.name+"**! Please complete your captcha to verify that you are human!" in message.content:
+        regex_expression = "((\([1-5]/5\))"
+        regex_result = re.search(regex_expression, message.content)
+        if regex_result:
+            log.warning("User "+DCL.user.name+" has been warned for captcha"+print(regex_result.group(0))+"/5")
+            return 1
+    ##check if the user is banned
+    if "**"+DCL.user.name+"**!  You have been banned for" in message.content:
+        regex_expression =  "( [1-9]H )"
+        regex_result = re.search(regex_expression, message.content)
+        if regex_result:
+            log.warning("User "+DCL.user.name+" has been banned for "+regex_result.group(0)+" hours")
+            return 1
 
-class fuckedupwords:
-    banned_words = [
-        "banned"
-    ]
-    captcha_words = [
-        "captcha",
-        "solve"
-    ]
+def boxchecker(message):
+    if "**"+DCL.user.name+"**, You found a" in message.content:
+        if "weapon" in message.content:
+            #use wb all
+            regex_expression = "(\[[1-3]/3\])"
+            regex_result = re.search(regex_expression, message.content)
+            if regex_result:
+                log.info("User "+DCL.user.name+" has found a weapon box "+regex_result.group(0)+"/3")
+                if int(regex_result.group(0)[1]) == 3:
+                    log.info("+regex_result.group(0)+"+"Weapon box will be opened because :: WHEN FULL OPEN ALL")
+                    #send message to the channel
+                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo wb all")
+                elif random.randint(0,3) == 0:
+                    log.info("+regex_result.group(0)+"+"Weapon box will be opened because :: %33 OPEN IT INSTANTLY")
+                    #send message to the channel
+                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo wb all")
+
+                    return 1
+        elif "lootbox" in message.content:
+            #use lb all
+            regex_expression = "(\[[1-3]/3\])"
+            regex_result = re.search(regex_expression, message.content)
+            if regex_result:
+                log.info("User "+DCL.user.name+" has found a lootbox "+regex_result.group(0)+"/3")
+                if int(regex_result.group(0)[1]) == 3:
+                    log.info("+regex_result.group(0)+"+"Lootbox will be opened because :: WHEN FULL OPEN ALL")
+                    #send message to the channel
+                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
+                elif random.randint(0,3) == 0:
+                    log.info("+regex_result.group(0)+"+"Lootbox will be opened because :: %33 OPEN IT INSTANTLY")
+                    #send message to the channel
+                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
+#gem checker
+def gemchecker(message):
+    ##USE ONLY AFTER HUNT
+    gems = {
+        "Lucky": [ #Heart gem
+            #from common to fabled
+            ## Common, Uncommon, Rare, Epic, Mystical, Legendary, Fabled
+            510366763255463936, #common
+            510366764249382922, #uncommon
+            0, #Rare | UNKNOWN
+            0, #Epic
+            0, #Mystical
+            0, #Legendary
+            0 #Fabled
+        ],
+        "Empowering": [ #Round gem
+            #from common to fabled
+            ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
+            510366792024195072, #Common
+            510366792095367189, #Uncommon
+            0, #Rare | UNKNOWN
+            510366792800272394, #Epic
+            510366792447819777, #Mystical
+            0, #Legendary | UNKNOWN
+            0 #Fabled | UNKNOWN
+        ],
+        "Hunting": [ #Diamond gem
+            #from common to fabled
+            ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
+            0, #Common | UNKNOWN
+            492572122514980864, #Uncommon
+            492572122888011776, #Rare
+            492572122477101056, #Epic
+            492572122590478356, #Mystical
+            492572124251422720, #Legendary
+            0 #Fabled | UNKNOWN
+        ]
+    }
+    if "**"+DCL.user.name+"**, You found a" in message.content:
+        if "gem" in message.content:
+            #use wb all
+            regex_expression = "(\[[1-3]/3\])"
+            regex_result = re.search(regex_expression, message.content)
+            if regex_result:
+                log.info("User "+DCL.user.name+" has found a gem "+regex_result.group(0)+"/3")
+                if int(regex_result.group(0)[1]) == 3:
+                    log.info("+regex_result.group(0)+"+"Gem will be opened because :: WHEN FULL OPEN ALL")
+                    #send message to the channel
+                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
+                elif random.randint(0,3) == 0:
+                    log.info("+regex_result.group(0)+"+"Gem will be opened because :: %33 OPEN IT INSTANTLY")
+                    #send message to the channel
+                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
 
 
 #on message
@@ -263,7 +359,5 @@ def get_command_message():
     return random.choice([
     "owo hunt", "owo battle"
     ])
-#create a async function
-
 #connect gateway
 loop.run_until_complete(DCL.start(settings["token"]))
