@@ -11,7 +11,8 @@ class relogin(Exception):
         self.message = message
     def __str__(self):
         return self.message
-    
+    #check if user token is valid
+    #return true if valid
 def check_token(token):
     response = requests.get('https://discord.com/api/v6/auth/login', headers={"Authorization": token})
     return True if response.status_code == 200 else False
@@ -282,44 +283,6 @@ def boxchecker(message):
                     log.info("+regex_result.group(0)+"+"Lootbox will be opened because :: %33 OPEN IT INSTANTLY")
                     #send message to the channel
                     DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
-#gem checker
-def gemchecker(message):
-    ##USE ONLY AFTER HUNT
-    gems = {
-        "Lucky": [ #Heart gem
-            #from common to fabled
-            ## Common, Uncommon, Rare, Epic, Mystical, Legendary, Fabled
-            510366763255463936, #common
-            510366764249382922, #uncommon
-            0, #Rare | UNKNOWN
-            0, #Epic
-            0, #Mystical
-            0, #Legendary
-            0 #Fabled
-        ],
-        "Empowering": [ #Round gem
-            #from common to fabled
-            ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
-            510366792024195072, #Common
-            510366792095367189, #Uncommon
-            0, #Rare | UNKNOWN
-            510366792800272394, #Epic
-            510366792447819777, #Mystical
-            0, #Legendary | UNKNOWN
-            0 #Fabled | UNKNOWN
-        ],
-        "Hunting": [ #Diamond gem
-            #from common to fabled
-            ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
-            0, #Common | UNKNOWN
-            492572122514980864, #Uncommon
-            492572122888011776, #Rare
-            492572122477101056, #Epic
-            492572122590478356, #Mystical
-            492572124251422720, #Legendary
-            0 #Fabled | UNKNOWN
-        ]
-    }
     if "**"+DCL.user.name+"**, You found a" in message.content:
         if "gem" in message.content:
             #use wb all
@@ -336,6 +299,146 @@ def gemchecker(message):
                     #send message to the channel
                     DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
 
+#gem checker
+def gemchecker_inventory(message, method = 2):
+    ##USE ONLY AFTER HUNT
+    
+    if method == 1: 
+        #use id of the gems to dedect them
+        gems = {
+            "Lucky": [ #Heart gem
+                #from common to fabled
+                ## Common, Uncommon, Rare, Epic, Mystical, Legendary, Fabled
+                510366763255463936, #common
+                510366764249382922, #uncommon
+                0, #Rare | UNKNOWN
+                0, #Epic
+                0, #Mystical
+                0, #Legendary
+                0 #Fabled
+            ],
+            "Empowering": [ #Round gem
+                #from common to fabled
+                ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
+                510366792024195072, #Common
+                510366792095367189, #Uncommon
+                0, #Rare | UNKNOWN
+                510366792800272394, #Epic
+                510366792447819777, #Mystical
+                0, #Legendary | UNKNOWN
+                0 #Fabled | UNKNOWN
+            ],
+            "Hunting": [ #Diamond gem
+                #from common to fabled
+                ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
+                0, #Common | UNKNOWN
+                492572122514980864, #Uncommon
+                492572122888011776, #Rare
+                492572122477101056, #Epic
+                492572122590478356, #Mystical
+                492572124251422720, #Legendary
+                0 #Fabled | UNKNOWN
+            ]
+        }
+    elif method == 2:
+        #use code of the gem to dedect them
+        gems = {
+            "Hunting": [ #Diamond gem
+                #from common to fabled
+                ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
+                51, #Common
+                52, #Uncommon
+                53, #Rare
+                54, #Epic
+                55, #Mystical
+                56, #Legendary
+                57 #Fabled | UNKNOWN
+            ],
+            "Empowering": [ #Round gem
+                #from common to fabled
+                ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
+                65, #Common
+                66, #Uncommon
+                67, #Rare
+                68, #Epic
+                69, #Mystical
+                70, #Legendary
+                71 #Fabled | UNKNOWN
+            ],
+            "Lucky": [ #Heart gem
+                #from common to fabled
+                ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
+                72, #common
+                73, #uncommon
+                74, #rare
+                75, #Epic
+                76, #Mystical
+                77, #Legendary
+                78 #Fabled | UNKNOWN
+            ],
+        }  
+        #normalize the message as a fuckin markdown is the ast thing we want in this script
+        m = message.content.replace("**", "")
+        m = m.replace("*", "")
+        #cut head to hold inventory as is
+        m = m.strip("=")[-1]
+        #remove emojis
+        #replace everything between < and > with ""
+        m = re.sub(r"<(.*?)>", "", m)
+
+        # EXPECTİNG RESULT
+        # "\n`52`\u2070\u00b9    `53`\u2070\u00b9    `54`\u2070\u00b9    `55`\u2070\u00b2\n`56`\u2070\u00b9    `65`\u2070\u00b9    `66`\u2070\u00b2    `68`\u2070\u00b2\n`69`\u2070\u00b3    `72`\u2070\u2079    `73`\u2070\u2074    `75`\u2070\u2075\n`100`\u00b9\u2078    `103`\u2070\u00b9    `110`\u2070\u00b9    `111`\u2070\u00b9\n`2--`\ud83d\uddbc\u2070\u00b9"
+        #call superscript_normalizer
+        m = superscript_normalizer(m)
+        #now we have '\n`52`01    `53`01    `54`01    `55`02\n`56`01    `65`01    `66`02    `68`02\n`69`03    `72`09    `73`04    `75`05\n`100`18    `103`01    `110`01    `111`01\n`2--`\ud83d\uddbc01'
+        #remove all the newlines
+        m = m.replace("\n", "    ")
+        #split the string by spaces
+        m = m.split("    ")
+        #drop the first element
+        m = m[1:]
+        #for each element in the list remove the first character
+        for i in range(len(m)):
+            #remove the first character
+            m[i] = m[i][1:]
+        inventory = {}
+        #inventory syntax:: item[int] = amount[int]
+        #for each element strip with ` and save it to the dict
+        for i in m:
+            #split the string by `
+            i = i.split("`")
+            #save the item to the dict
+            inventory[int(i[0])] = int(i[1])
+        #now the dict is like
+        #{
+            #item id: amount
+        #}
+
+
+        
+
+        
+    
+
+def superscript_normalizer(string): #convert unicode shit in inventory message to normal text
+    #small numbers called superscript numbers
+    superscript_numbers = {
+        "\u2070": "0",
+        "\u00b9": "1",
+        "\u00b2": "2",
+        "\u00b3": "3",
+        "\u2074": "4",
+        "\u2075": "5",
+        "\u2076": "6",
+        "\u2077": "7",
+        "\u2078": "8",
+        "\u2079": "9"
+    }
+    for key, value in superscript_numbers.items():
+        string = string.replace(key, value)
+    return string
+        
+        
 
 #on message
 @DCL.event
