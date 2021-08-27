@@ -296,14 +296,14 @@ except FileNotFoundError:
             break
         else:
             print("Invalid token")
-        print("Do you want to save the token (y/n)?")
-        answer = input()
-        settings = {'token':settings["token"], 'server': None, 'channel': None, 'username': None}
-        if answer == 'y':
-            with open('settings.cfg', 'w') as f:
-                json.dump(settings, f)
-        else:
-            print(answer, 'Token not saved')
+    print("Do you want to save the token (y/n)?")
+    answer = input()
+    settings = {'token':settings["token"], 'server': None, 'channel': None, 'username': None}
+    if answer == 'y':
+        with open('settings.cfg', 'w') as f:
+            json.dump(settings, f)
+    else:
+        print(answer, 'Token not saved')
 
 @DCL.event
 async def on_ready():
