@@ -5,6 +5,179 @@ import datetime
 import asyncio
 import requests
 import re
+import base64
+import aiohttp
+async def captcha_solver(message):
+    
+    #return 1 if solveable
+    #return 0 if not solveable
+
+    captcha_image = message.attachments[0]
+    captcha_image_url = captcha_image.url
+    #use a web service to solve captcha
+    #if captcha solving service is enabled
+    if settings["captchaservice"]["use_service_to_solve_captchas"] == True:
+        #get captcha service name
+        captcha_service = settings["captchaservice"]["captcha_service"]
+        #switch captcha service
+        if captcha_service == "anti-captcha":
+            ## api docs : https://anti-captcha.com/tr/apidoc/methods/createTask
+            #url: https://api.anti-captcha.com/createTask
+            #Type: POST
+            #Content-type: application-json
+            
+
+            #response when no error
+            #{
+            #    "errorId": 0,
+            #    "taskId": 7654321
+            #}
+
+            #response when error
+            #{
+            #    "errorId": 1,
+            #    "errorCode": "ERROR_KEY_DOES_NOT_EXIST",
+            #    "errorDescription": "Account authorization key not found in the system"
+            #}
+            #get captcha api key from settings
+            api_key = settings["captchaservice"] ["api_key"]
+            #download captcha image get base64 use aiohttp
+            async with aiohttp.ClientSession() as session:
+                async with session.get(captcha_image_url) as resp:
+                    image_data = await resp.read()
+            #encode image to base64
+            image_data_base64 = base64.b64encode(image_data).decode('utf-8')
+
+            post_data = {
+            "clientKey": api_key,
+            "task":
+                {
+                    "type":"ImageToTextTask",
+                    "body":image_data_base64,
+                    "phrase":False,
+                    "case":False,
+                    "numeric":0,
+                    "math":False,
+                    "minLength":0,
+                    "maxLength":0,
+                    "websiteURL": "discord selfbot owo bot by sudo-do"
+                }
+            }
+            #send post request
+            async with aiohttp.ClientSession() as session:
+                async with session.post('https://api.anti-captcha.com/createTask', json=post_data) as resp:
+                    response = await resp.json()
+            #get_task_status
+            async def get_task_status(task_id):
+                #url: https://api.anti-captcha.com/getTaskResult
+                #Type: POST
+                #Content-type: application-json
+                #response when no error
+                #{
+                #    "errorId":0,
+                #    "status":"ready",
+                #    "solution":
+                #        {
+                #            "text":"deditur",
+                #            "url":"http:\/\/61.39.233.233\/1\/147220556452507.jpg"
+                #        },
+                #    "cost":"0.000700",
+                #    "ip":"46.98.54.221",
+                #    "createTime":1472205564,
+                #    "endTime":1472205570,
+                #    "solveCount":"0"
+                #}
+                #response when error
+            
+                post_data = {
+                "clientKey": api_key,
+                "taskId": task_id
+                }
+                async with aiohttp.ClientSession() as session:
+                    async with session.post('https://api.anti-captcha.com/getTaskResult', json=post_data) as resp:
+                        response = await resp.json()
+                #check if error
+                error = response["errorId"]
+
+                #status
+                status = response["status"]
+
+                if error:
+                    #log error
+                    log.error("CAPTCHA SERVICE ERROR: "+str(response["errorDescription"]))
+                    print(response)
+                    return False
+                else:
+                    return status
+            #get task result
+            async def get_task_result(task_id):
+                #url: https://api.anti-captcha.com/getTaskResult
+                #Type: POST
+                #Content-type: application-json
+                #response when no error
+                #{
+                #    "errorId":0,
+                #    "status":"ready",
+                #    "solution":
+                #        {
+                #            "text":"deditur",
+                #            "url":"http:\/\/61.39.233.233\/1\/147220556452507.jpg"
+                #        },
+                #    "cost":"0.000700",
+                #    "ip":"46.98.54.221",
+                #    "createTime":1472205564,
+                #    "endTime":1472205570,
+                #    "solveCount":"0"
+                #}
+                #response when error
+            
+                post_data = {
+                "clientKey": api_key,
+                "taskId": task_id
+                }
+                async with aiohttp.ClientSession() as session:
+                    async with session.post('https://api.anti-captcha.com/getTaskResult', json=post_data) as resp:
+                        response = await resp.json()
+                #check if error
+                error = response["errorId"]
+
+                #status
+                status = response["status"]
+
+                if error:
+                    #log error
+                    log.error("CAPTCHA SERVICE ERROR: "+str(response["errorDescription"]))
+                    print(response)
+                    return False
+                else:
+                    return response["solution"]["text"]
+            if response["errorId"] == 0:
+                #get task id
+                task_id = response["taskId"]
+                #get task status
+                task_status = await get_task_status(task_id)
+                #check if solved
+                while task_status != "ready":
+                    await asyncio.sleep(5)
+                    task_status = await get_task_status(task_id)
+                #get task result
+                task_result = await get_task_result(task_id)
+                #return result
+                await message.channel.send(task_result)
+                #check if we successed
+                captcha_response_response = await DCL.wait_for('message', check=lambda message: message.author == message.author and any(x in message.content for x in ["Wrong verification code!", "I have verified that you are human!"]))
+                if "Wrong verification code!" in captcha_response_response.content:
+                    #log error and stop program
+                    log.error("CAPTCHA ERROR: Wrong verification code!")
+                    log.warning("CAPTCHA WARNING: Please solve the captcha soon!")
+                    await DCL.close()
+                elif "I have verified that you are human!" in captcha_response_response.content:
+                    #log success
+                    log.info("CAPTCHA SUCCESS: Verified!")
+                    runtime_broker.is_running = True
+        else:
+            log.error("Captcha service not supported | "+captcha_service)
+            return 0
 #custom exception class
 class relogin(Exception):
     def __init__(self, message):
@@ -17,6 +190,7 @@ def check_token(token):
     response = requests.get('https://discord.com/api/v6/auth/login', headers={"Authorization": token})
     return True if response.status_code == 200 else False
 DCL = discord.Client()
+actionafter = None
 async def cheat():
     if runtime_broker.is_running == 0:
         return
@@ -38,8 +212,13 @@ async def cheat():
                     await DCL.send_message(DCL.get_channel(settings["channel"]), message)
                 if message == "owo hunt":
                     #check gems
-                    #check_gems()
-                    pass
+
+                    try:
+                        msg = await DCL.wait_for('message', check=gemchecker_inventory, timeout=30)
+                    except asyncio.TimeoutError:
+                        log.warning("Hunt action message didn't received in time, gem checking ignored. TIMEOUT 30")
+                        continue
+                    
         except:
             pass
 #create loop in discord client
@@ -118,6 +297,14 @@ except FileNotFoundError:
             break
         else:
             print("Invalid token")
+        print("Do you want to save the token (y/n)?")
+        answer = input()
+        settings = {'token':settings["token"], 'server': None, 'channel': None, 'username': None}
+        if answer == 'y':
+            with open('settings.cfg', 'w') as f:
+                json.dump(settings, f)
+        else:
+            print(answer, 'Token not saved')
 
 @DCL.event
 async def on_ready():
@@ -125,21 +312,18 @@ async def on_ready():
     if not runtime_broker.is_ready:
         runtime_broker.is_ready = 1
         runtime_broker.is_running = 1
+        #update settings with username
+        settings["username"] = DCL.user.name
+        #save settings
+        with open('settings.cfg', 'w') as f:
+            json.dump(settings, f)
         log.info("Logged in as " + DCL.user.name + "(" + str(DCL.user.id) + ")")
-        await DCL.logout()
+        await DCL.close()
 loop = asyncio.get_event_loop()
 loop.run_until_complete(DCL.start(settings["token"]))
 log.info("Logged out")
 
 
-print("Do you want to save the token for "+DCL.user.name+" (y/n)?")
-answer = input()
-settings = {'token':settings["token"], 'server': None, 'channel': None, 'username': DCL.user.name}
-if answer == 'y':
-    with open('settings.cfg', 'w') as f:
-        json.dump(settings, f)
-else:
-    print(answer, 'Token not saved')
 
 #server name by id
 def server_name(id):
@@ -234,7 +418,7 @@ else:
 def issuechecker(message):
     #RETURN TRUE İF İSSUE
     #RETURN FALSE IF SAFE   
-
+    #++ RETURN 2 İF USE CAPTCHA SOLVİLNG SERVİCE
     ###CHECK WARNİNG AND BANNED STATUS
     ##check if the user warned with captcha
     if "**"+DCL.user.name+"**! Please complete your captcha to verify that you are human!" in message.content:
@@ -250,7 +434,19 @@ def issuechecker(message):
         if regex_result:
             log.warning("User "+DCL.user.name+" has been banned for "+regex_result.group(0)+" hours")
             return 1
-
+    ###check if message has attachment
+    if message.attachments:
+        for attachment in message.attachments:
+            #if message attachment name is captcha.*
+            if attachment.filename.startswith("captcha"):
+                log.warning("User "+DCL.user.name+" has been received a captcha")
+                if settings["captchaservice"]["use_service_to_solve_captchas"] == True:
+                    log.info("Captcha service is enabled\nTrying to solve the captcha with service")
+                    return 2
+                else:
+                    log.error("Captcha solving service is not enabled")
+                    return 1
+                return 1
 def boxchecker(message):
     if "**"+DCL.user.name+"**, You found a" in message.content:
         if "weapon" in message.content:
@@ -301,6 +497,11 @@ def boxchecker(message):
 
 #gem checker
 def gemchecker_inventory(message, method = 2):
+    ##METHOD 1 IS MAIN BUT WE DON'T HAVE ENOUGH INFO TO USE IT
+    ##METHOD 2 IS USED FOR INVENTORY CHECKING AND IT IS USED FOR GEM CHECKING
+    ##TO USE METHOD 1 WE NEED MORE INFO ABOUT GEMS
+    ##FOR NOW METHOD 2 WİLL BE USED
+
     ##USE ONLY AFTER HUNT
     
     if method == 1: 
@@ -447,13 +648,33 @@ async def on_message(message):
         return
     elif message.author.id == 408785106942164992: 
         #print the message received with log info
-        log.info(message.content)
-
+        issue = issuechecker(message)
+        if issue == 0:
+            pass
+        elif issue == 1:
+            #captcha received, auto solve disabled
+            log.warning("Captcha received, please manually solve it")
+            log.info("to solve captchas automatically install a captcha solving service, read readme for more info")
+            runtime_broker.is_running = 0
+            log.info("waiting captcha to be solved")
+            captcha_response_response = await DCL.wait_for('message', check=lambda message: message.author == message.author and any(x in message.content for x in ["Wrong verification code!", "I have verified that you are human!"]))
+            if "Wrong verification code!" in captcha_response_response.content:
+                #log error and stop program
+                log.error("CAPTCHA ERROR: Wrong verification code!")
+            elif "I have verified that you are human!" in captcha_response_response.content:
+                #log success
+                log.info("CAPTCHA SUCCESS: Verified!")
+                runtime_broker.is_running = True
+        elif issue == 2:
+            #captcha received, auto solve enabled
+            log.warning("Captcha received, attempting to solve it")
+            #solve the captcha
+            captcha_solver(message)
 async def waitbefore(message1, message2):
     #hunt battle 2 times
     if any (message1 == x for x in ["owo hunt", "owo battle"]) and any (message1 == x for x in ["owo hunt", "owo battle"]):
-        if settings.humanize_time:
-            r = random.randint(random.randint(10,15), random.randint(20,25))
+        if settings["humanize_time"]:
+            r = random.randint(random.randint(5,15), random.randint(20,25))
             await asyncio.sleep(r)
         else:
             r = random.randint(15,20)
@@ -461,6 +682,27 @@ async def waitbefore(message1, message2):
 def get_command_message():
     return random.choice([
     "owo hunt", "owo battle"
+    ]) if random.randint(0,5) == 1 else random.choice([
+    "owo sell all", "owo coinflip 5", "owo coinflip 10", "owo coinflip 25", "owo coinflip 50", "owo coinflip 100", "owo coinflip 250"
     ])
-#connect gateway
-loop.run_until_complete(DCL.start(settings["token"]))
+#connect gateway,
+#on ready
+@DCL.event
+async def on_ready():
+    #send message to channel
+    m = [
+        "owo quest",
+        "owo daily"
+    ]
+    await DCL.send_message(DCL.get_channel(settings["channel_id"]), m[0])
+    waitbefore(m[0], m[1])
+    await DCL.send_message(DCL.get_channel(settings["channel_id"]), m[1])
+while 1:
+    exitreason = "Unknown"
+    try:
+        loop.run_until_complete(DCL.start(settings["token"]))
+    except Exception as e:
+        exitreason = str(e)
+    log.info("Exiting with reason: " + exitreason)
+    input("press enter to restart...")
+    log.info("Restarting...")
