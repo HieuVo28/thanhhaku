@@ -222,7 +222,6 @@ async def cheat():
         except:
             pass
 #create loop in discord client
-DCL.loop.create_task(cheat())
 global settings
 try:
     import colorama
@@ -689,6 +688,7 @@ def get_command_message():
 #on ready
 @DCL.event
 async def on_ready():
+    log.info("Logged in 692")
     #send message to channel
     m = [
         "owo quest",
@@ -697,12 +697,5 @@ async def on_ready():
     await DCL.send_message(DCL.get_channel(settings["channel_id"]), m[0])
     waitbefore(m[0], m[1])
     await DCL.send_message(DCL.get_channel(settings["channel_id"]), m[1])
-while 1:
-    exitreason = "Unknown"
-    try:
-        loop.run_until_complete(DCL.start(settings["token"]))
-    except Exception as e:
-        exitreason = str(e)
-    log.info("Exiting with reason: " + exitreason)
-    input("press enter to restart...")
-    log.info("Restarting...")
+DCL.loop.create_task(cheat())
+DCL.run(settings["token"])
