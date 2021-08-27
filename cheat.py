@@ -224,7 +224,8 @@ async def cheat():
             log.error("Error in main cheat loop: "+str(e))
             pass
 #create loop in discord client
-global settings, prerun
+global settings, prerun, owoid
+owoid = 408785106942164992
 prerun = False
 try:
     import colorama
@@ -325,7 +326,6 @@ async def on_ready():
             json.dump(settings, f)
         log.info("Logged in as " + DCL.user.name + "(" + str(DCL.user.id) + ")")
         await DCL.close()
-print(prerun)
 if prerun:
     loop = asyncio.get_event_loop()
     loop.run_until_complete(DCL.start(settings["token"]))
@@ -508,17 +508,40 @@ def boxchecker(message):
                     send_message_with_logging("owo lb all")
 
 #gem checker
-def gemchecker_inventory(message, method = 2):
-    ##METHOD 1 IS MAIN BUT WE DON'T HAVE ENOUGH INFO TO USE IT
-    ##METHOD 2 IS USED FOR INVENTORY CHECKING AND IT IS USED FOR GEM CHECKING
-    ##TO USE METHOD 1 WE NEED MORE INFO ABOUT GEMS
-    ##FOR NOW METHOD 2 WİLL BE USED
+class userdata:
+    inventory =  {
+        #hunting
+        51: 0,
+        52: 0,
+        53: 0,
+        54: 0,
+        55: 0,
+        56: 0,
+        57: 0,
+        #empowering
+        65: 0,
+        66: 0,
+        67: 0,
+        68: 0,
+        69: 0,
+        70: 0,
+        71: 0,
+        #Lucky
+        72: 0,
+        73: 0,
+        74: 0,
+        75: 0,
+        76: 0,
+        77: 0,
+        78: 0
+    }
+    owocash = None
 
-    ##USE ONLY AFTER HUNT
-    
-    if method == 1: 
+class gemchecker:
+
+    class gems:
         #use id of the gems to dedect them
-        gems = {
+        ids = {
             "Lucky": [ #Heart gem
                 #from common to fabled
                 ## Common, Uncommon, Rare, Epic, Mystical, Legendary, Fabled
@@ -553,9 +576,8 @@ def gemchecker_inventory(message, method = 2):
                 0 #Fabled | UNKNOWN
             ]
         }
-    elif method == 2:
         #use code of the gem to dedect them
-        gems = {
+        codes = {
             "Hunting": [ #Diamond gem
                 #from common to fabled
                 ## Common,Uncommon,Rare,Epic,Mystical,Legendary,Fabled
@@ -590,6 +612,10 @@ def gemchecker_inventory(message, method = 2):
                 78 #Fabled | UNKNOWN
             ],
         }  
+    async def update_inventory():
+        await send_message_with_logging("owo inv")
+        log.info("Updating inventory")
+        await DCL.wait_for('message', check=lambda message: message.author.id == owoid and "Inventory" in message.content)
         #normalize the message as a fuckin markdown is the ast thing we want in this script
         m = message.content.replace("**", "")
         m = m.replace("*", "")
@@ -626,6 +652,19 @@ def gemchecker_inventory(message, method = 2):
         #{
             #item id: amount
         #}
+        #delete items over 100
+        for i in inventory:
+            if i > 100:
+                #delete the item from the dict
+                del inventory[i]
+        userdata.inventory = inventory
+        #x is total amount of gems
+        x = 0
+        #for each item in the inventory
+        for i in inventory:
+            #add the amount to x
+            x += inventory[i]
+        
 
 
         
@@ -662,7 +701,7 @@ async def on_message(message):
         #print the message received with log info
         issue = issuechecker(message)
         if issue == 0:
-            pass
+            log.info("issuechecker: safe")
         elif issue == 1:
             #captcha received, auto solve disabled
             log.warning("Captcha received, please manually solve it")
