@@ -1,12 +1,16 @@
-import selfpy as discord
-import random
-import json
-import datetime
-import asyncio
-import requests
-import re
-import base64
-import aiohttp
+#import heartrate
+#heartrate.trace(browser=True)
+import selfpy as discord #pip installation overrides for discord.py
+import os #used to restart
+import sys #used to restart
+import random #used to get random seconds
+import json 
+import datetime #used in log class
+import asyncio #used in token checker
+import requests #idk where tf i used this
+import re #used in gemchecker_inventory
+import base64 #used for auto captcha solver
+import aiohttp 
 async def captcha_solver(message):
     
     #return 1 if solveable
@@ -192,24 +196,21 @@ def check_token(token):
 DCL = discord.Client()
 actionafter = None
 async def cheat():
-    if runtime_broker.is_running == 0:
-        return
+    await DCL.wait_until_ready()
     while 1:
         try:
-            #wait till client ready
-            await DCL.wait_until_ready()
             message = get_command_message()
             while  1:
-                message = nextmessage
                 nextmessage = get_command_message()
+                message = nextmessage
                 #send message to the channel
-                waitbefore(message, nextmessage)
+                await waitbefore(message, nextmessage)
                 if runtime_broker.is_running:
-                    await DCL.send_message(DCL.get_channel(settings["channel"]), message)
+                    await send_message_with_logging(message)
                 else:
                     while not runtime_broker.is_running:
                         await asyncio.sleep(1)
-                    await DCL.send_message(DCL.get_channel(settings["channel"]), message)
+                    await send_message_with_logging(message)
                 if message == "owo hunt":
                     #check gems
 
@@ -219,10 +220,12 @@ async def cheat():
                         log.warning("Hunt action message didn't received in time, gem checking ignored. TIMEOUT 30")
                         continue
                     
-        except:
+        except Exception as e:
+            log.error("Error in main cheat loop: "+str(e))
             pass
 #create loop in discord client
-global settings
+global settings, prerun
+prerun = False
 try:
     import colorama
     colorama.init()
@@ -289,6 +292,7 @@ try:
 
 except FileNotFoundError:
     #ask token
+    prerun = True
     while 1:
         print('Please enter your token:')
         token = input()
@@ -298,13 +302,16 @@ except FileNotFoundError:
             print("Invalid token")
     print("Do you want to save the token (y/n)?")
     answer = input()
-    settings = {'token':settings["token"], 'server': None, 'channel': None, 'username': None}
+    settings = {'token':settings["token"], 'server': None, 'channel': None, 'username': None, 'humanize_time': True}
     if answer == 'y':
         with open('settings.cfg', 'w') as f:
             json.dump(settings, f)
     else:
         print(answer, 'Token not saved')
-
+if settings["server"] == None or settings["server"] == False:
+    prerun = True
+if settings["channel"] == None or settings["channel"] == False:
+    prerun = True
 @DCL.event
 async def on_ready():
     print('Logged in')
@@ -318,9 +325,11 @@ async def on_ready():
             json.dump(settings, f)
         log.info("Logged in as " + DCL.user.name + "(" + str(DCL.user.id) + ")")
         await DCL.close()
-loop = asyncio.get_event_loop()
-loop.run_until_complete(DCL.start(settings["token"]))
-log.info("Logged out")
+print(prerun)
+if prerun:
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(DCL.start(settings["token"]))
+    log.info("Logged out")
 
 
 
@@ -345,7 +354,7 @@ def update_settings(setting, value):
         #save settings
         with open('settings.cfg', 'w') as f:
             json.dump(settings, f)
-print("Welcome "+DCL.user.name+"!")
+print("Welcome "+settings["username"]+"!")
 try:
     settings["server"]
 except KeyError:
@@ -413,13 +422,17 @@ else:
     except:
         print("Unable to update config")
         print("Error: Unexpected error")
-    
+if prerun:
+    log.info("Script will restart to run")
+    #restart
+    os.execl(sys.executable, sys.executable, *sys.argv)
 def issuechecker(message):
     #RETURN TRUE İF İSSUE
     #RETURN FALSE IF SAFE   
     #++ RETURN 2 İF USE CAPTCHA SOLVİLNG SERVİCE
     ###CHECK WARNİNG AND BANNED STATUS
     ##check if the user warned with captcha
+    log.info("issue checker handled message "+str(message.id))
     if "**"+DCL.user.name+"**! Please complete your captcha to verify that you are human!" in message.content:
         regex_expression = "((\([1-5]/5\))"
         regex_result = re.search(regex_expression, message.content)
@@ -457,11 +470,11 @@ def boxchecker(message):
                 if int(regex_result.group(0)[1]) == 3:
                     log.info("+regex_result.group(0)+"+"Weapon box will be opened because :: WHEN FULL OPEN ALL")
                     #send message to the channel
-                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo wb all")
+                    send_message_with_logging("owo wb all")
                 elif random.randint(0,3) == 0:
                     log.info("+regex_result.group(0)+"+"Weapon box will be opened because :: %33 OPEN IT INSTANTLY")
                     #send message to the channel
-                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo wb all")
+                    send_message_with_logging("owo wb all")
 
                     return 1
         elif "lootbox" in message.content:
@@ -473,11 +486,11 @@ def boxchecker(message):
                 if int(regex_result.group(0)[1]) == 3:
                     log.info("+regex_result.group(0)+"+"Lootbox will be opened because :: WHEN FULL OPEN ALL")
                     #send message to the channel
-                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
+                    send_message_with_logging("owo lb all")
                 elif random.randint(0,3) == 0:
                     log.info("+regex_result.group(0)+"+"Lootbox will be opened because :: %33 OPEN IT INSTANTLY")
                     #send message to the channel
-                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
+                    send_message_with_logging("owo lb all")
     if "**"+DCL.user.name+"**, You found a" in message.content:
         if "gem" in message.content:
             #use wb all
@@ -488,11 +501,11 @@ def boxchecker(message):
                 if int(regex_result.group(0)[1]) == 3:
                     log.info("+regex_result.group(0)+"+"Gem will be opened because :: WHEN FULL OPEN ALL")
                     #send message to the channel
-                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
+                    send_message_with_logging("owo lb all")
                 elif random.randint(0,3) == 0:
                     log.info("+regex_result.group(0)+"+"Gem will be opened because :: %33 OPEN IT INSTANTLY")
                     #send message to the channel
-                    DCL.send_message(DCL.get_channel(settings["channel"]), "owo lb all")
+                    send_message_with_logging("owo lb all")
 
 #gem checker
 def gemchecker_inventory(message, method = 2):
@@ -671,21 +684,39 @@ async def on_message(message):
             captcha_solver(message)
 async def waitbefore(message1, message2):
     #hunt battle 2 times
-    if any (message1 == x for x in ["owo hunt", "owo battle"]) and any (message1 == x for x in ["owo hunt", "owo battle"]):
+    if any (message1 == x for x in ["owo hunt", "owo battle"]) and any (message2 == x for x in ["owo hunt", "owo battle"]):
         if settings["humanize_time"]:
             r = random.randint(random.randint(5,15), random.randint(20,25))
             await asyncio.sleep(r)
         else:
             r = random.randint(15,20)
             await asyncio.sleep(r)
+    else: #falldown
+        if settings["humanize_time"]:
+            r = random.randint(random.randint(10,15), random.randint(15,20))
+        else:
+            r = random.randint(15,20)
+        await asyncio.sleep(r)
+
 def get_command_message():
+    #1/15 change to get pointless message
+    if random.randint(1,15) == 10:
+        return random.choice([
+            "owo sell all",
+            "owo coinflip 5", "owo coinflip 10", "owo coinflip 25", "owo coinflip 50", "owo coinflip 100", "owo coinflip 250"
+        ])
     return random.choice([
     "owo hunt", "owo battle"
-    ]) if random.randint(0,5) == 1 else random.choice([
-    "owo sell all", "owo coinflip 5", "owo coinflip 10", "owo coinflip 25", "owo coinflip 50", "owo coinflip 100", "owo coinflip 250"
     ])
 #connect gateway,
 #on ready
+
+async def send_message_with_logging(message):
+    #send message to channel
+    await DCL.get_channel(settings["channel"]).send(message)
+    #log message
+    log.info("sent: "+message)
+
 @DCL.event
 async def on_ready():
     log.info("Logged in 692")
@@ -694,8 +725,11 @@ async def on_ready():
         "owo quest",
         "owo daily"
     ]
-    await DCL.send_message(DCL.get_channel(settings["channel_id"]), m[0])
-    waitbefore(m[0], m[1])
-    await DCL.send_message(DCL.get_channel(settings["channel_id"]), m[1])
+    await send_message_with_logging(m[0])
+    await waitbefore(m[0], m[1])
+    await send_message_with_logging(m[1])
+    #set true runtime broker
+    runtime_broker.is_running = True
+    runtime_broker.is_ready = True
 DCL.loop.create_task(cheat())
 DCL.run(settings["token"])
