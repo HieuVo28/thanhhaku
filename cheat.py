@@ -517,9 +517,28 @@ def boxchecker(message):
                     log.info("+regex_result.group(0)+"+"Gem will be opened because :: %33 OPEN IT INSTANTLY")
                     #send message to the channel
                     send_message_with_logging("owo lb all")
+def trace_gems(message):
+    
+    # gemchecker.gems.ids # emoji id of the gems
+
+    text = message.content
+
+    try:
+        text = text.split("hunt is empowered by")[1].split("!")
+        #find gems in text update actively 
+        # # userdata.active_gems
+
+    except IndexError:""
+        log.info("no gems used")
+        return {0, 0, 0}
 
 #gem checker
 class userdata:
+    active_gems = {
+        "hunting": False,
+        "empowering": False,
+        "lucky": False
+    }
     inventory =  {
         #hunting
         51: 0,
