@@ -12,7 +12,13 @@ finally:
     traces_sample_rate=1.0
     )
     print("sentry issue tracer running")
-import selfpy as discord #pip installation overrides for discord.py
+try:
+    import selfpy as discord #pip installation overrides for discord.py
+except:
+    import setup
+    setup.main()
+finally:
+    import selfpy as discord
 import os #used to restart
 import sys #used to restart
 import random #used to get random seconds
