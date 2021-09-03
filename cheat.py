@@ -1,5 +1,17 @@
-#import heartrate
-#heartrate.trace(browser=True)
+import subprocess
+import sys
+
+try:
+    import sentry_sdk
+except:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "sentry_sdk"])
+    import sentry_sdk
+finally:
+    sentry_sdk.init(
+    "https://eabaa0df4a2e43f78b2fd8bac57cacc2@o985801.ingest.sentry.io/5943549",
+    traces_sample_rate=1.0
+    )
+    print("sentry issue tracer running")
 import selfpy as discord #pip installation overrides for discord.py
 import os #used to restart
 import sys #used to restart
@@ -303,7 +315,7 @@ except FileNotFoundError:
             print("Invalid token")
     print("Do you want to save the token (y/n)?")
     answer = input()
-    settings = {'token':settings["token"], 'server': None, 'channel': None, 'username': None, 'humanize_time': True}
+    settings = {'token':token, 'server': None, 'channel': None, 'username': None, 'humanize_time': True}
     if answer == 'y':
         with open('settings.cfg', 'w') as f:
             json.dump(settings, f)
@@ -423,9 +435,9 @@ else:
         print("Unable to update config")
         print("Error: Unexpected error")
 if prerun:
-    log.info("Script will restart to run")
-    #restart
-    os.execl(sys.executable, sys.executable, *sys.argv)
+    log.info("Restart the script to run")
+    exit(0)
+
 def issuechecker(message):
     #RETURN TRUE İF İSSUE
     #RETURN FALSE IF SAFE   
@@ -612,6 +624,28 @@ class gemchecker:
                 78 #Fabled | UNKNOWN
             ],
         }  
+    async def check_missing_gems(message): #use after every hunt, to the hunt message
+        m = message.content
+        for gtype in gemchecker.gems.ids:
+            for gid in gemchecker.gems.ids[gtype]:
+                if gid in m:
+                    pass
+                else:
+                    #parse inventory
+                    _ = False
+                    for gid in gemchecker.gems.codes[gtype]:
+                        log.info("Gem "+str(gid)+" which is class "+gtype+" missing")
+                        if not _:
+                            if userdata.inventory[gid] > 0:
+                                log.info("Gem "+str(gid)+" will be used")
+                                await use_gem(message,gid)
+                                userdata.inventory[gid] -= 1
+                                
+                                _ = True
+async def use_gem(message,gid):
+    await send_message_with_logging(message.channel, "owo use "+str(gid))
+
+                    
     async def update_inventory():
         await send_message_with_logging("owo inv")
         log.info("Updating inventory")
@@ -755,7 +789,9 @@ async def send_message_with_logging(message):
     await DCL.get_channel(settings["channel"]).send(message)
     #log message
     log.info("sent: "+message)
-
+async def parse_quest(message):
+    pass
+    #todo
 @DCL.event
 async def on_ready():
     log.info("Logged in 692")
