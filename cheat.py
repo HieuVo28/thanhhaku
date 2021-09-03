@@ -200,14 +200,7 @@ async def captcha_solver(message):
         else:
             log.error("Captcha service not supported | "+captcha_service)
             return 0
-#custom exception class
-class relogin(Exception):
-    def __init__(self, message):
-        self.message = message
-    def __str__(self):
-        return self.message
-    #check if user token is valid
-    #return true if valid
+
 def check_token(token):
     response = requests.get('https://discord.com/api/v6/auth/login', headers={"Authorization": token})
     return True if response.status_code == 200 else False
