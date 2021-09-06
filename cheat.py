@@ -668,7 +668,7 @@ async def use_gem(message,gid):
 
 async def fill_gems():
     for gemtype in userdata.active_gems:
-        
+        if gemtype == None
         
  
 async def update_inventory():
