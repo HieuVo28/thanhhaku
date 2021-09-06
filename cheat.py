@@ -518,26 +518,29 @@ def boxchecker(message):
                     #send message to the channel
                     send_message_with_logging("owo lb all")
 def trace_gems(message):
-    
     # gemchecker.gems.ids # emoji id of the gems
 
     text = message.content
 
     try:
         text = text.split("hunt is empowered by")[1].split("!")
-        #find gems in text update actively 
-        # # userdata.active_gems
-
-    except IndexError:""
+    except IndexError:
         log.info("no gems used")
-        return {0, 0, 0}
+        for gemtype in userdata.active_gems:
+            userdata.active_gems[gemtype] = 0
+    #find gems in text update actively 
+    # # userdata.active_gems
+    for gemtype in gemchecker.gems.ids:
+        for gem in gemtype:
+            if gem in text:
+                userdata.active_gems[gemtype] = gemchecker.gems.codes[gemchecker.gems.ids[gemtype].index(gem)]
 
 #gem checker
 class userdata:
     active_gems = {
-        "hunting": False,
-        "empowering": False,
-        "lucky": False
+        "hunting": None,
+        "empowering": None,
+        "lucky": None
     }
     inventory =  {
         #hunting
@@ -663,60 +666,64 @@ class gemchecker:
 async def use_gem(message,gid):
     await send_message_with_logging(message.channel, "owo use "+str(gid))
 
-                    
-    async def update_inventory():
-        await send_message_with_logging("owo inv")
-        log.info("Updating inventory")
-        await DCL.wait_for('message', check=lambda message: message.author.id == owoid and "Inventory" in message.content)
-        #normalize the message as a fuckin markdown is the ast thing we want in this script
-        m = message.content.replace("**", "")
-        m = m.replace("*", "")
-        #cut head to hold inventory as is
-        m = m.strip("=")[-1]
-        #remove emojis
-        #replace everything between < and > with ""
-        m = re.sub(r"<(.*?)>", "", m)
-
-        # EXPECTİNG RESULT
-        # "\n`52`\u2070\u00b9    `53`\u2070\u00b9    `54`\u2070\u00b9    `55`\u2070\u00b2\n`56`\u2070\u00b9    `65`\u2070\u00b9    `66`\u2070\u00b2    `68`\u2070\u00b2\n`69`\u2070\u00b3    `72`\u2070\u2079    `73`\u2070\u2074    `75`\u2070\u2075\n`100`\u00b9\u2078    `103`\u2070\u00b9    `110`\u2070\u00b9    `111`\u2070\u00b9\n`2--`\ud83d\uddbc\u2070\u00b9"
-        #call superscript_normalizer
-        m = superscript_normalizer(m)
-        #now we have '\n`52`01    `53`01    `54`01    `55`02\n`56`01    `65`01    `66`02    `68`02\n`69`03    `72`09    `73`04    `75`05\n`100`18    `103`01    `110`01    `111`01\n`2--`\ud83d\uddbc01'
-        #remove all the newlines
-        m = m.replace("\n", "    ")
-        #split the string by spaces
-        m = m.split("    ")
-        #drop the first element
-        m = m[1:]
-        #for each element in the list remove the first character
-        for i in range(len(m)):
-            #remove the first character
-            m[i] = m[i][1:]
-        inventory = {}
-        #inventory syntax:: item[int] = amount[int]
-        #for each element strip with ` and save it to the dict
-        for i in m:
-            #split the string by `
-            i = i.split("`")
-            #save the item to the dict
-            inventory[int(i[0])] = int(i[1])
-        #now the dict is like
-        #{
-            #item id: amount
-        #}
-        #delete items over 100
-        for i in inventory:
-            if i > 100:
-                #delete the item from the dict
-                del inventory[i]
-        userdata.inventory = inventory
-        #x is total amount of gems
-        x = 0
-        #for each item in the inventory
-        for i in inventory:
-            #add the amount to x
-            x += inventory[i]
+async def fill_gems():
+    for gemtype in userdata.active_gems:
+        if gemtype == None
         
+ 
+async def update_inventory():
+    await send_message_with_logging("owo inv")
+    log.info("Updating inventory")
+    await DCL.wait_for('message', check=lambda message: message.author.id == owoid and "Inventory" in message.content)
+    #normalize the message as a fuckin markdown is the ast thing we want in this script
+    m = message.content.replace("**", "")
+    m = m.replace("*", "")
+    #cut head to hold inventory as is
+    m = m.strip("=")[-1]
+    #remove emojis
+    #replace everything between < and > with ""
+    m = re.sub(r"<(.*?)>", "", m)
+
+    # EXPECTİNG RESULT
+    # "\n`52`\u2070\u00b9    `53`\u2070\u00b9    `54`\u2070\u00b9    `55`\u2070\u00b2\n`56`\u2070\u00b9    `65`\u2070\u00b9    `66`\u2070\u00b2    `68`\u2070\u00b2\n`69`\u2070\u00b3    `72`\u2070\u2079    `73`\u2070\u2074    `75`\u2070\u2075\n`100`\u00b9\u2078    `103`\u2070\u00b9    `110`\u2070\u00b9    `111`\u2070\u00b9\n`2--`\ud83d\uddbc\u2070\u00b9"
+    #call superscript_normalizer
+    m = superscript_normalizer(m)
+    #now we have '\n`52`01    `53`01    `54`01    `55`02\n`56`01    `65`01    `66`02    `68`02\n`69`03    `72`09    `73`04    `75`05\n`100`18    `103`01    `110`01    `111`01\n`2--`\ud83d\uddbc01'
+    #remove all the newlines
+    m = m.replace("\n", "    ")
+    #split the string by spaces
+    m = m.split("    ")
+    #drop the first element
+    m = m[1:]
+    #for each element in the list remove the first character
+    for i in range(len(m)):
+        #remove the first character
+        m[i] = m[i][1:]
+    inventory = {}
+    #inventory syntax:: item[int] = amount[int]
+    #for each element strip with ` and save it to the dict
+    for i in m:
+        #split the string by `
+        i = i.split("`")
+        #save the item to the dict
+        inventory[int(i[0])] = int(i[1])
+    #now the dict is like
+    #{
+        #item id: amount
+    #}
+    #delete items over 100
+    for i in inventory:
+        if i > 100:
+            #delete the item from the dict
+            del inventory[i]
+    userdata.inventory = inventory
+    #x is total amount of gems
+    x = 0
+    #for each item in the inventory
+    for i in inventory:
+        #add the amount to x
+        x += inventory[i]
+    
 
 
         
