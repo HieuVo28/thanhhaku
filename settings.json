@@ -1,0 +1,23 @@
+{
+    "account": {
+        "username": "",
+        "token": ""
+    },
+    "playground": {
+        "server": {
+            "name": "",
+            "id": 0
+        },
+        "channel": {
+            "name": "",
+            "id": 0
+        }
+    },
+    "captcha_service": {
+        "active": false,
+        "name": "",
+        "api": "",
+        "key": "",
+        "engine": ""
+    }
+}

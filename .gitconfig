@@ -1,7 +1,0 @@
-[user]
-    email = 63397699+sudo-do@users.noreply.github.com
-    name = sudo-do
-[gpg]
-    program = gpg2
-[commit]
-    gpgsign = true

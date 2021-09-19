@@ -1,47 +1,98 @@
-import tkinter, json
+import json
+import os
+from lib import defaults
 
-#make a settings editor window
-#to configure the settings.cfg file
+def ensure():
+    """
+    create default settings.json if it does not exist
+    """
+    if not os.path.isfile(defaults.SETTINGS_FILE):
+        create()
+def create():
+    """
+    create the settings
+    """
+    # get the default settings
+    settings = defaults.DEFAULT_SETTINGS
+    # draw the page
+    settings['settings'] = draw_page(settings['settings'])
+    # update the settings
+    update(settings)
+def get():
+    """
+    get the settings
+    """
+    with open(defaults.SETTINGS_FILE, 'r') as f:
+        return json.load(f)
 
-#create window
-settings_window = tkinter.Tk()
-settings_window.title("Settings")
-settings_window.geometry("400x400")
+def update(settings):
+    """
+    update the settings
+    """
+    # update the settings
+    with open(defaults.SETTINGS_FILE, 'w') as f:
+        json.dump(settings, f)
+def draw_page(selectables):
+    """
+    draw the settings page
+    """
+    print("Settings:")
+    for i, selectable in enumerate(selectables):
+        print("{}. {}".format(i + 1, selectable))
+    while True:
+        # get user input
+        try:
+            input_ = int(input("Select: "))
+            #validate input
+            if input_ < 0 or input_ > len(selectables):
+                print("Invalid input")
+                continue
+            # return the selected item
+            return selectables[input_ - 1]
+        except ValueError:
+            print("Invalid input")
+            continue
+if __name__ == "__main__":
+    ensure()
+    print("Settings Editor")
+    
+    while True:
+        selection = draw_page([
+            "Configure",
+            "Exit"
+        ])
 
-#read settings.cfg
-#create a list of settings
-#create a list of settings labels
-#create a list of settings entries
-#create a button to save
-#create a button to cancel
-#use grid to place the widgets
-with open("settings.cfg", "r") as settings_file:
-    settings_list = json.load(settings_file)
-    settings_file.close()
-
-settings_labels = []
-settings_entries = []
-for setting in settings_list:
-    settings_labels.append(tkinter.Label(settings_window, text=setting))
-    settings_entries.append(tkinter.Entry(settings_window))
-    settings_labels[-1].grid(row=len(settings_labels), column=0)
-    settings_entries[-1].grid(row=len(settings_labels), column=1)
-    settings_entries[-1].insert(0, settings_list[setting])
-
-#buttons
-save_button = tkinter.Button(settings_window, text="Save", command=lambda: save_settings(settings_entries))
-save_button.grid(row=len(settings_labels)+1, column=0)
-#cancel
-cancel_button = tkinter.Button(settings_window, text="Cancel", command=lambda: settings_window.destroy())
-cancel_button.grid(row=len(settings_labels)+1, column=1)
-
-def save_settings(settings_entries):
-    settings_list = {}
-    for entry in settings_entries:
-        settings_list[entry.get()] = entry.get()
-    with open("settings.cfg", "w") as settings_file:
-        json.dump(settings_list, settings_file)
-        settings_file.close()
-    settings_window.destroy()
-
-settings_window.mainloop()
+        if selection == "Exit":
+            break
+        elif selection == "Configure":
+            print("Configure")
+            config = get()
+            def recursive_draw_page(config):
+                print(config)
+                draw = []
+                #get top level keys
+                keys = list(config.keys())
+                #if key is a dict, add it to the selectables
+                for key in keys:
+                    if isinstance(config[key], dict):
+                        draw.append("> "+key)
+                for key in keys:
+                    if not isinstance(config[key], dict):
+                        draw.append(key)
+                #draw the page
+                draw_page(draw)
+                #get user input
+                while True:
+                    selection0 = int(input("Select: "))
+                    #validate input
+                    if selection0 < 0 or selection0 > len(draw):
+                        print("Invalid input")
+                        continue
+                    else:
+                        break
+                selected = draw[selection0]
+                #if selected is a dict, draw the page
+                if isinstance(config[selected], dict):
+                    print(config)
+                    recursive_draw_page(config[selected])
+            recursive_draw_page(config)
