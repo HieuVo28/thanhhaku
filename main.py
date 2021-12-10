@@ -76,7 +76,7 @@ def report_error(content):
   if use_terminal:
     print(at(), content)
   else:
-    messagebox.showerror("OWO bot cheat", content)
+    messagebox.showerror("OWO Auto Farm", content)
 client=discum_c844aef.Client(token=bot.token,proxy_host=bot.proxyserver, proxy_port=bot.proxyport, log=False)
 def issuechecker():
   msgs=client.getMessages(str(bot.channel), num=10)
@@ -88,18 +88,33 @@ def issuechecker():
       msgonec=msgone['content']
       if "(2/5)" in str(msgonec):
           return "exit"
+          time.sleep(10)
       if "(3/5)" in str(msgonec):
           return "exit"
+          time.sleep(10)
       if "(4/5)" in str(msgonec):
           return "exit"
+          time.sleep(10)
       if "(5/5)" in str(msgonec):
           return "exit"
+          time.sleep(10)
       if 'banned' in msgonec:
           print(f'{at()}{bot.color.fail} !!! [BANNED] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on the Support Discord server')
           return "exit"
       if 'complete your captcha' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED {msgonec[-6:]}')
           return "exit"
+          time.sleep(10)
+      if 'support guild!' in msgonec:
+          print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED')
+          return "exit"
+          time.sleep(10)
+      if 'captcha' in msgonec:
+          return "exit"
+          time.sleep(10)
+      if 'Beep Boop.' in msgonec:
+          return "exit"
+          time.sleep(10)
   if not owodes:
     return "exit"
 def security():
@@ -116,16 +131,17 @@ def runner():
         print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command}")
         if not command2==command:
           client.typingAction(str(bot.channel))
-          time.sleep(10)
+          time.sleep(13)
           client.sendMessage(str(bot.channel), command2)
           print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command2}")
         time.sleep(random.randint(wbm[0],wbm[1]))
 def owopray():
   client.sendMessage(str(bot.channel), "owo pray")
   print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo pray")
+  time.sleep(13)
 def gems():
   client.typingAction(str(bot.channel))
-  time.sleep(2)
+  time.sleep(3)
   client.sendMessage(str(bot.channel), "owo inv")
   print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo inv")
   time.sleep(5)
@@ -141,7 +157,7 @@ def gems():
     if '50' in inv:
       client.sendMessage(str(bot.channel), "owo lb all")
       print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo lb all")
-      time.sleep(10)
+      time.sleep(13)
       gems()
       return
     for item in inv:
@@ -172,17 +188,17 @@ def loopie():
   main=time.time()
   while x:
       runner()
-      if time.time() - pray > random.randint(300, 500):
+      if time.time() - pray > random.randint(300, 600):
         security()
         owopray()
         pray=time.time()
-      if time.time() - gem > random.randint(500, 1000):
+      if time.time() - gem > random.randint(500, 1200):
         security()
         gems()
         gem=time.time()
       
-      if time.time() - main > random.randint(1000, 1800):
-        time.sleep(random.randint(150, 300))
+      if time.time() - main > random.randint(1000, 2000):
+        time.sleep(random.randint(200, 350))
         security ()
         main=time.time()
 @client.gateway.command
