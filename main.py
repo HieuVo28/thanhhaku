@@ -88,8 +88,14 @@ def issuechecker():
       msgonec=msgone['content']
       if "(2/5)" in str(msgonec):
           return "exit"
+      if "(3/5)" in str(msgonec):
+          return "exit"
+      if "(4/5)" in str(msgonec):
+          return "exit"
+      if "(5/5)" in str(msgonec):
+          return "exit"
       if 'banned' in msgonec:
-          print(f'{at()}{bot.color.fail} !!! [BANNED] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on https://github.com/sudo-do/discord-selfbot-owo-bot/')
+          print(f'{at()}{bot.color.fail} !!! [BANNED] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on the Support Discord server')
           return "exit"
       if 'complete your captcha' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED {msgonec[-6:]}')
@@ -99,6 +105,7 @@ def issuechecker():
 def security():
         if issuechecker() == "exit":
           report_error("Ban-security triggered, answer the captcha")
+          time.sleep(99999)
           exit()
 def runner():
         global wbm
@@ -109,7 +116,7 @@ def runner():
         print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command}")
         if not command2==command:
           client.typingAction(str(bot.channel))
-          time.sleep(1)
+          time.sleep(10)
           client.sendMessage(str(bot.channel), command2)
           print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command2}")
         time.sleep(random.randint(wbm[0],wbm[1]))
