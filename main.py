@@ -86,41 +86,34 @@ def issuechecker():
     if msgone['author']['id']==str(bot.owoid):
       owodes=owodes+1
       msgonec=msgone['content']
+      if "DM" in str(msgonec):
+          return "exit"
       if "(2/5)" in str(msgonec):
           return "exit"
-          time.sleep(10)
       if "(3/5)" in str(msgonec):
           return "exit"
-          time.sleep(10)
       if "(4/5)" in str(msgonec):
           return "exit"
-          time.sleep(10)
       if "(5/5)" in str(msgonec):
           return "exit"
-          time.sleep(10)
       if 'banned' in msgonec:
           print(f'{at()}{bot.color.fail} !!! [BANNED] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on the Support Discord server')
           return "exit"
       if 'complete your captcha' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED {msgonec[-6:]}')
           return "exit"
-          time.sleep(10)
       if 'support guild!' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED')
           return "exit"
-          time.sleep(10)
       if 'captcha' in msgonec:
           return "exit"
-          time.sleep(10)
       if 'Beep Boop.' in msgonec:
           return "exit"
-          time.sleep(10)
   if not owodes:
     return "exit"
 def security():
         if issuechecker() == "exit":
           report_error("Ban-security triggered, answer the captcha")
-          time.sleep(99999)
           exit()
 def runner():
         global wbm
