@@ -124,14 +124,14 @@ def runner():
         print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command}")
         if not command2==command:
           client.typingAction(str(bot.channel))
-          time.sleep(13)
+          time.sleep(12)
           client.sendMessage(str(bot.channel), command2)
           print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command2}")
         time.sleep(random.randint(wbm[0],wbm[1]))
 def owopray():
   client.sendMessage(str(bot.channel), "owo pray")
   print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo pray")
-  time.sleep(13)
+  time.sleep(10)
 def gems():
   client.typingAction(str(bot.channel))
   time.sleep(3)
@@ -150,7 +150,7 @@ def gems():
     if '50' in inv:
       client.sendMessage(str(bot.channel), "owo lb all")
       print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo lb all")
-      time.sleep(13)
+      time.sleep(10)
       gems()
       return
     for item in inv:
@@ -173,7 +173,7 @@ def gems():
       if not len(tier[level]) == 0:
         client.sendMessage(str(bot.channel), "owo use "+str(max(tier[level])))
         print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo use {str(max(tier[level]))}")
-        time.sleep(6)
+        time.sleep(5)
 def loopie():
   x=True
   pray = 0
@@ -181,17 +181,17 @@ def loopie():
   main=time.time()
   while x:
       runner()
-      if time.time() - pray > random.randint(300, 600):
+      if time.time() - pray > random.randint(300, 500):
         security()
         owopray()
         pray=time.time()
-      if time.time() - gem > random.randint(500, 1200):
+      if time.time() - gem > random.randint(500, 1000):
         security()
         gems()
         gem=time.time()
       
       if time.time() - main > random.randint(1000, 2000):
-        time.sleep(random.randint(200, 350))
+        time.sleep(random.randint(200, 300))
         security ()
         main=time.time()
 @client.gateway.command
