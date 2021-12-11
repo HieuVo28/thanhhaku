@@ -1,5 +1,5 @@
-Current version: 1.0.4
-Lastest version: 1.0.4
+Current version: 1.0.5
+Lastest version: 1.0.5
 
--Fixed stop when captcha
--Removed some statement
+-Faster farm
+-Auto stop when captcha it's really good
