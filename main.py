@@ -86,7 +86,7 @@ def issuechecker():
     if msgone['author']['id']==str(bot.owoid):
       owodes=owodes+1
       msgonec=msgone['content']
-      if "DM" in str(msgonec):
+      if "DM me with only" in str(msgonec):
           return "exit"
       if "(2/5)" in str(msgonec):
           return "exit"
@@ -102,12 +102,16 @@ def issuechecker():
       if 'complete your captcha' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED {msgonec[-6:]}')
           return "exit"
-      if 'support guild!' in msgonec:
+      if 'If you have trouble solving the captcha, please ask us in our support guild!' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED')
           return "exit"
       if 'captcha' in msgonec:
           return "exit"
       if 'Beep Boop.' in msgonec:
+          return "exit"
+      if 'verify that you are human!' in msgonec:
+          return "exit"
+      if 'to check that you are a human!'
           return "exit"
   if not owodes:
     return "exit"
@@ -124,20 +128,20 @@ def runner():
         print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command}")
         if not command2==command:
           client.typingAction(str(bot.channel))
-          time.sleep(12)
+          time.sleep(13)
           client.sendMessage(str(bot.channel), command2)
           print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command2}")
         time.sleep(random.randint(wbm[0],wbm[1]))
 def owopray():
   client.sendMessage(str(bot.channel), "owo pray")
   print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo pray")
-  time.sleep(10)
+  time.sleep(13)
 def gems():
   client.typingAction(str(bot.channel))
-  time.sleep(3)
+  time.sleep(5)
   client.sendMessage(str(bot.channel), "owo inv")
   print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo inv")
-  time.sleep(5)
+  time.sleep(7)
   msgs=client.getMessages(str(bot.channel), num=5)
   msgs=json.loads(msgs.text)
   inv = 0
@@ -150,7 +154,7 @@ def gems():
     if '50' in inv:
       client.sendMessage(str(bot.channel), "owo lb all")
       print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo lb all")
-      time.sleep(10)
+      time.sleep(13)
       gems()
       return
     for item in inv:
@@ -173,7 +177,7 @@ def gems():
       if not len(tier[level]) == 0:
         client.sendMessage(str(bot.channel), "owo use "+str(max(tier[level])))
         print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo use {str(max(tier[level]))}")
-        time.sleep(5)
+        time.sleep(7)
 def loopie():
   x=True
   pray = 0
@@ -181,7 +185,7 @@ def loopie():
   main=time.time()
   while x:
       runner()
-      if time.time() - pray > random.randint(300, 500):
+      if time.time() - pray > random.randint(300, 600):
         security()
         owopray()
         pray=time.time()
@@ -191,7 +195,7 @@ def loopie():
         gem=time.time()
       
       if time.time() - main > random.randint(1000, 2000):
-        time.sleep(random.randint(200, 300))
+        time.sleep(random.randint(200, 350))
         security ()
         main=time.time()
 @client.gateway.command
