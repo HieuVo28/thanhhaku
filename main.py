@@ -120,8 +120,8 @@ def issuechecker():
     return "exit"
 def security():
         if issuechecker() == "exit":
+          client.sendMessage(str(bot.channel), "@here CAPTCHA!")
           report_error("Ban-security triggered, answer the captcha")
-          client.sendMessage(str(bot.channel), "<@bot.userid> CAPTCHA!")
           exit()
 def runner():
         global wbm
