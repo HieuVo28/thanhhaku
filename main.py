@@ -114,7 +114,7 @@ def issuechecker():
           return "exit"
       if 'verify that you are human!' in msgonec:
           return "exit"
-      if 'to check that you are a human!'
+      if 'to check that you are a human!' in msgonec:
           return "exit"
   if not owodes:
     return "exit"
