@@ -21,7 +21,6 @@ class bot:
       data = json.load(file)
       token = data["token"]
       channel = data["channel"]
-      userid = data["userid"]
       proxy = data["proxy"]
       proxyserver = data["proxy_"]["server"]
       proxyport = data["proxy_"]["port"]
@@ -29,7 +28,6 @@ class bot:
       temp={}
       temp["token"] = input("please enter your dc token for once: ")
       temp["channel"] = input("please enter the id of the channel: ")
-      temp["userid"] = input("please enter your Discord ID: ")
       while True:
         temp["proxy"] = input("will you use proxy? [YES/NO]")
         temp["proxy_"] = {}
@@ -44,7 +42,6 @@ class bot:
       json.dump(temp, file)
       token = temp["token"]
       channel = temp["channel"]
-      userid = temp["userid"]
       proxy = temp["proxy"]
       proxyserver = temp["proxy_"]["server"]
       proxyport = temp["proxy_"]["port"]
@@ -199,7 +196,7 @@ def loopie():
         gem=time.time()
       
       if time.time() - main > random.randint(1000, 2000):
-        time.sleep(random.randint(200, 350))
+        time.sleep(random.randint(250, 350))
         security ()
         main=time.time()
 @client.gateway.command
