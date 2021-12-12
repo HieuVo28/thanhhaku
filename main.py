@@ -21,6 +21,7 @@ class bot:
       data = json.load(file)
       token = data["token"]
       channel = data["channel"]
+      userid = data["userid"]
       proxy = data["proxy"]
       proxyserver = data["proxy_"]["server"]
       proxyport = data["proxy_"]["port"]
@@ -28,6 +29,7 @@ class bot:
       temp={}
       temp["token"] = input("please enter your dc token for once: ")
       temp["channel"] = input("please enter the id of the channel: ")
+      temp["userid"] = input("please enter your Discord ID: ")
       while True:
         temp["proxy"] = input("will you use proxy? [YES/NO]")
         temp["proxy_"] = {}
@@ -42,6 +44,7 @@ class bot:
       json.dump(temp, file)
       token = temp["token"]
       channel = temp["channel"]
+      userid = temp["userid"]
       proxy = temp["proxy"]
       proxyserver = temp["proxy_"]["server"]
       proxyport = temp["proxy_"]["port"]
@@ -118,6 +121,7 @@ def issuechecker():
 def security():
         if issuechecker() == "exit":
           report_error("Ban-security triggered, answer the captcha")
+          client.sendMessage(str(bot.channel), "<@bot.userid> CAPTCHA!")
           exit()
 def runner():
         global wbm
