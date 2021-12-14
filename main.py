@@ -116,7 +116,7 @@ def issuechecker():
           return "exit"
       if '⚠️' in msgonec:
           return "exit"
-    if(message.channel.type === 'dm')
+    if message.channel.type == 'dm':
       if 'Beep Boop. Are you a real human? Please reply with the following' in msgonec:
           return "exit"
       if '⚠️' in msgonec:
