@@ -126,7 +126,7 @@ def issuechecker():
       if 'human' in msgonec:
           return "exit"
       if 'http://verify.owobot.com' in msgonec:
-          return "exit"|
+          return "exit"
   if not owodes:
     return "exit"
 def security():
