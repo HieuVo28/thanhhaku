@@ -190,13 +190,13 @@ def loopie():
         security()
         owopray()
         pray=time.time()
-      if time.time() - gem > random.randint(500, 1000):
+      if time.time() - gem > random.randint(600, 1000):
         security()
         gems()
         gem=time.time()
       
       if time.time() - main > random.randint(1000, 2000):
-        time.sleep(random.randint(250, 350))
+        time.sleep(random.randint(300, 600))
         security ()
         main=time.time()
 @client.gateway.command
