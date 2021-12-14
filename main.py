@@ -113,8 +113,19 @@ def issuechecker():
           return "exit"
       if 'to check that you are a human!' in msgonec:
           return "exit"
-      if '⚠️ ' in msgonec:
+      if '⚠️' in msgonec:
           return "exit"
+    if(message.channel.type === 'dm')
+      if 'Beep Boop. Are you a real human? Please reply with the following' in msgonec:
+          return "exit"
+      if '⚠️' in msgonec:
+          return "exit"
+      if 'Are you a real human? Please use the link below so I can check!' in msgonec:
+          return "exit"
+      if 'human' in msgonec:
+          return "exit"
+      if 'http://verify.owobot.com' in msgonec:
+          return "exit"|
   if not owodes:
     return "exit"
 def security():
