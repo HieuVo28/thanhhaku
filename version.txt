@@ -1,5 +1,5 @@
-Current version: Beta3 1.0.6
-Lastest version: Beta3 1.0.6
+Current version: Beta4 1.0.6
+Lastest version: Beta4 1.0.6
 
 -Ping when captcha
 -Fixed stop when captcha
