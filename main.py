@@ -5,7 +5,7 @@ import json
 import random
 import re
 import os
-import discord.py
+import discord
 try:
   from tkinter import messagebox
   use_terminal=False
