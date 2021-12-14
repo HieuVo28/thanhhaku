@@ -113,6 +113,8 @@ def issuechecker():
           return "exit"
       if 'to check that you are a human!' in msgonec:
           return "exit"
+      if '⚠️ ' in msgonec:
+          return "exit"
   if not owodes:
     return "exit"
 def security():
