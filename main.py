@@ -5,6 +5,7 @@ import json
 import random
 import re
 import os
+from functools import cache
 try:
   from tkinter import messagebox
   use_terminal=False
@@ -73,6 +74,7 @@ class bot:
       reset = ''
       bold = ''
       underline = ''
+@cache
 def at():
   return f'\033[0;43m{time.strftime("%d %b %Y %H:%M:%S", time.localtime())}\033[0;21m'
 def report_error(content):
