@@ -5,7 +5,6 @@ import json
 import random
 import re
 import os
-import discord
 try:
   from tkinter import messagebox
   use_terminal=False
@@ -22,6 +21,7 @@ class bot:
       data = json.load(file)
       token = data["token"]
       channel = data["channel"]
+      channel2 = data["owodmid"]
       proxy = data["proxy"]
       proxyserver = data["proxy_"]["server"]
       proxyport = data["proxy_"]["port"]
@@ -29,6 +29,7 @@ class bot:
       temp={}
       temp["token"] = input("please enter your dc token for once: ")
       temp["channel"] = input("please enter the id of the channel: ")
+      temp["owodmid"] = input("please enter the id of the owo dms channel: ")
       while True:
         temp["proxy"] = input("will you use proxy? [YES/NO]")
         temp["proxy_"] = {}
@@ -43,6 +44,7 @@ class bot:
       json.dump(temp, file)
       token = temp["token"]
       channel = temp["channel"]
+      channel2 = temp["owodmid"]
       proxy = temp["proxy"]
       proxyserver = temp["proxy_"]["server"]
       proxyport = temp["proxy_"]["port"]
@@ -116,24 +118,37 @@ def issuechecker():
           return "exit"
       if '⚠️' in msgonec:
           return "exit"
-    if message.channel.type == 'dm':
-      if 'Beep Boop. Are you a real human? Please reply with the following' in msgonec:
+      if 'Please DM me with only the following' in msgonec:
           return "exit"
-      if '⚠️' in msgonec:
+      if not owodes:
           return "exit"
-      if 'Are you a real human? Please use the link below so I can check!' in msgonec:
-          return "exit"
-      if 'human' in msgonec:
+def issuechecker2():
+      msgs=client.getMessages(str(bot.channel2), num=1)
+      msgs=json.loads(msgs.text)
+      owodes=0
+      for msgone in msgs:
+       if msgone['author']['id']==str(bot.owoid):
+          owodes=owodes+1
+      msgonec=msgone['content']
+      if 'Are you a real human?' in msgonec:
           return "exit"
       if 'http://verify.owobot.com' in msgonec:
           return "exit"
-  if not owodes:
-    return "exit"
+      if '?' in msgonec:
+          return "exit"
+      if not owodes:
+          time.sleep(5)
+
 def security():
         if issuechecker() == "exit":
           client.sendMessage(str(bot.channel), "@here CAPTCHA!")
+          report_error("Ban-security triggered, answer the captcha") 
+          exit()
+        if issuechecker2() == "exit":
+          client.sendMessage(str(bot.channel), "@here CAPTCHA!")
           report_error("Ban-security triggered, answer the captcha")
           exit()
+
 def runner():
         global wbm
         command=random.choice(bot.commands)
