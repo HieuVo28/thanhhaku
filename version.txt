@@ -1,4 +1,4 @@
-Current version: Beta5 1.0.6
+Current version: 1.0.4
 Lastest version: Beta5 1.0.6
 
 -Fixed stop when captcha
