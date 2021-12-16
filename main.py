@@ -5,6 +5,7 @@ import json
 import random
 import re
 import os
+from functools import cache
 try:
   from tkinter import messagebox
   use_terminal=False
@@ -21,6 +22,7 @@ class bot:
       data = json.load(file)
       token = data["token"]
       channel = data["channel"]
+      channel2 = data["owodmid"]
       proxy = data["proxy"]
       proxyserver = data["proxy_"]["server"]
       proxyport = data["proxy_"]["port"]
@@ -28,6 +30,7 @@ class bot:
       temp={}
       temp["token"] = input("please enter your dc token for once: ")
       temp["channel"] = input("please enter the id of the channel: ")
+      temp["owodmid"] = input("please enter the id of the owo dms channel: ")
       while True:
         temp["proxy"] = input("will you use proxy? [YES/NO]")
         temp["proxy_"] = {}
@@ -42,6 +45,7 @@ class bot:
       json.dump(temp, file)
       token = temp["token"]
       channel = temp["channel"]
+      channel2 = temp["owodmid"]
       proxy = temp["proxy"]
       proxyserver = temp["proxy_"]["server"]
       proxyport = temp["proxy_"]["port"]
@@ -70,6 +74,7 @@ class bot:
       reset = ''
       bold = ''
       underline = ''
+@cache
 def at():
   return f'\033[0;43m{time.strftime("%d %b %Y %H:%M:%S", time.localtime())}\033[0;21m'
 def report_error(content):
@@ -79,22 +84,22 @@ def report_error(content):
     messagebox.showerror("OWO Auto Farm", content)
 client=discum_c844aef.Client(token=bot.token,proxy_host=bot.proxyserver, proxy_port=bot.proxyport, log=False)
 def issuechecker():
-  msgs=client.getMessages(str(bot.channel), num=10)
+  msgs=client.getMessages(str(bot.channel), num=20)
   msgs=json.loads(msgs.text)
   owodes=0
   for msgone in msgs:
     if msgone['author']['id']==str(bot.owoid):
       owodes=owodes+1
       msgonec=msgone['content']
-      if "DM" in str(msgonec):
+      if "DM me with only" in (msgonec):
           return "exit"
-      if "(2/5)" in str(msgonec):
+      if "(2/5)" in (msgonec):
           return "exit"
-      if "(3/5)" in str(msgonec):
+      if "(3/5)" in (msgonec):
           return "exit"
-      if "(4/5)" in str(msgonec):
+      if "(4/5)" in (msgonec):
           return "exit"
-      if "(5/5)" in str(msgonec):
+      if "(5/5)" in (msgonec):
           return "exit"
       if 'banned' in msgonec:
           print(f'{at()}{bot.color.fail} !!! [BANNED] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on the Support Discord server')
@@ -102,19 +107,55 @@ def issuechecker():
       if 'complete your captcha' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED {msgonec[-6:]}')
           return "exit"
-      if 'support guild!' in msgonec:
+      if 'If you have trouble solving the captcha, please ask us in our support guild!' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED')
           return "exit"
       if 'captcha' in msgonec:
           return "exit"
       if 'Beep Boop.' in msgonec:
           return "exit"
-  if not owodes:
-    return "exit"
+      if 'verify that you are human!' in msgonec:
+          return "exit"
+      if 'to check that you are a human!' in msgonec:
+          return "exit"
+      if '⚠️' in msgonec:
+          return "exit"
+      if 'Please DM me with only the following' in msgonec:
+          return "exit"
+      if not owodes:
+          return "exit"
+def issuechecker2():
+      msgs=client.getMessages(str(bot.channel2), num=1)
+      msgs=json.loads(msgs.text)
+      owodes=0
+      for msgone in msgs:
+       if msgone['author']['id']==str(bot.owoid):
+          owodes=owodes+1
+      msgonec=msgone['content']
+      if 'Are you a real human?' in msgonec:
+          return "exit"
+      if 'http://verify.owobot.com' in msgonec:
+          return "exit"
+      if '?' in msgonec:
+          return "exit"
+      if not owodes:
+          time.sleep(5)
+      if 'I have verified that you are human! Thank you! :3' in msgonec:
+          return "nocap"
+
 def security():
         if issuechecker() == "exit":
-          report_error("Ban-security triggered, answer the captcha")
+          client.sendMessage(str(bot.channel), "@here CAPTCHA!")
+          report_error("Ban-security triggered, answer the captcha") 
           exit()
+        if issuechecker2() == "exit":
+          client.sendMessage(str(bot.channel), "@here CAPTCHA!")
+          report_error("Ban-security triggered, found captcha in DMs")
+          exit()
+        if issuechecker2() == "nocap":
+          client.sendMessage(str(bot.channel2), "Ahh yes no captcha, have a nice day!")
+          time.sleep(1)
+
 def runner():
         global wbm
         command=random.choice(bot.commands)
@@ -129,15 +170,15 @@ def runner():
           print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command2}")
         time.sleep(random.randint(wbm[0],wbm[1]))
 def owopray():
-  client.sendMessage(str(bot.channel), "owo pray @a")
+  client.sendMessage(str(bot.channel), "owo pray")
   print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo pray")
   time.sleep(13)
 def gems():
   client.typingAction(str(bot.channel))
-  time.sleep(3)
+  time.sleep(5)
   client.sendMessage(str(bot.channel), "owo inv")
   print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo inv")
-  time.sleep(5)
+  time.sleep(7)
   msgs=client.getMessages(str(bot.channel), num=5)
   msgs=json.loads(msgs.text)
   inv = 0
@@ -173,7 +214,8 @@ def gems():
       if not len(tier[level]) == 0:
         client.sendMessage(str(bot.channel), "owo use "+str(max(tier[level])))
         print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} owo use {str(max(tier[level]))}")
-        time.sleep(6)
+        time.sleep(7)
+        
 def loopie():
   x=True
   pray = 0
@@ -185,13 +227,13 @@ def loopie():
         security()
         owopray()
         pray=time.time()
-      if time.time() - gem > random.randint(500, 1200):
+      if time.time() - gem > random.randint(600, 1000):
         security()
         gems()
         gem=time.time()
       
       if time.time() - main > random.randint(1000, 2000):
-        time.sleep(random.randint(200, 350))
+        time.sleep(random.randint(300, 600))
         security ()
         main=time.time()
 @client.gateway.command
