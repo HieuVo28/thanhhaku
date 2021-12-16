@@ -1,4 +1,7 @@
-Current version: 1.0.4
-Lastest version: Beta5 1.0.6
+Current version: Beta6 1.0.6
+Lastest version: Beta6 1.0.6
 
--Fixed stop when captcha
+-Fixed stop when captcha again
+-Fixed stop if captcha im DMs a bit
+-Added ignore if no captcha in DMs 
+-Deleted the function str()
