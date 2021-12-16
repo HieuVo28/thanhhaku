@@ -1,5 +1,7 @@
-Current version: 1.0.4
+Current version: Beta5 1.0.6
 Lastest version: Beta5 1.0.6
 
 -Fixed stop when captcha
--Make the script slow a bit
+-Added check if captcha in DMs
+-Owo DMs channel id is now required
+-Removed discord package
