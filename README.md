@@ -21,4 +21,4 @@ also it automatically uses gemsz which is not perfect yet but works perfect
 feel free to open issues
 
 **Credit: sudo**
-**Lastest version: Beta 5 v1.0.6**
+**Lastest version: Beta 6 v1.0.6**
