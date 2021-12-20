@@ -6,6 +6,8 @@ import random
 import re
 import os
 from functools import cache
+
+from discum_c844aef.discum import Client
 try:
   from tkinter import messagebox
   use_terminal=False
@@ -30,7 +32,9 @@ class bot:
       temp={}
       temp["token"] = input("please enter your dc token for once: ")
       temp["channel"] = input("please enter the id of the channel: ")
-      temp["owodmid"] = input("please enter the id of the owo dms channel: ")
+      temp["owodmid"] = input("please enter the id of the owo dms channel(leave empty if you don't want to use it): ")
+      if temp["owodmid"].upper() == " ":
+        pass
       while True:
         temp["proxy"] = input("will you use proxy? [YES/NO]")
         temp["proxy_"] = {}
@@ -139,7 +143,7 @@ def issuechecker2():
       if '?' in msgonec:
           return "exit"
       if not owodes:
-          time.sleep(5)
+          pass
       if 'I have verified that you are human! Thank you! :3' in msgonec:
           return "nocap"
 
@@ -154,15 +158,21 @@ def security():
           exit()
         if issuechecker2() == "nocap":
           client.sendMessage(str(bot.channel2), "Ahh yes no captcha, have a nice day!")
-          time.sleep(1)
+          pass
+
 
 def runner():
         global wbm
+        owodes=0
         command=random.choice(bot.commands)
         command2=random.choice(bot.commands)
         client.typingAction(str(bot.channel))
         client.sendMessage(str(bot.channel), command)
         print(f"{at()}{bot.color.okgreen} [SENT] {bot.color.reset} {command}")
+        if issuechecker2() == "nocap":
+          client.sendMessage(str(bot.channel), "owo hunt")
+          if not owodes:
+            exit()
         if not command2==command:
           client.typingAction(str(bot.channel))
           time.sleep(13)
