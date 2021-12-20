@@ -1,7 +1,7 @@
-Current version: Beta6 1.0.6
-Lastest version: Beta6 1.0.6
+Current version: Beta7 1.0.6
+Lastest version: Beta7 1.0.6
 
--Fixed stop when captcha again
--Fixed stop if captcha im DMs a bit
--Added ignore if no captcha in DMs 
--Deleted the function str()
+-Add option to skip the OwO DMs channel id option (higher chance to get ban cause only 1 anti-ban system work)
+-The bot will ignore if you completed your captcha 
+-Fixed the stop if captcha in DMs a bit
+*idk if it's good or no*
