@@ -131,6 +131,7 @@ def issuechecker():
           return "exit"
  except TypeError:
     print("[ERROR] Wrong token or channel ID!")
+    report_error("[Error] Wrong token or channel ID")
     time.sleep(3)
     exit()
 def issuechecker2():
@@ -154,6 +155,7 @@ def issuechecker2():
           return "nocap"
   except TypeError:
     print("[ERROR] Wrong token or channel ID!")
+    report_error("[Error] Wrong token or channel ID")
     time.sleep(3)
     exit()
 
