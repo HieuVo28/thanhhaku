@@ -88,22 +88,23 @@ def report_error(content):
     messagebox.showerror("OWO Auto Farm", content)
 client=discum_c844aef.Client(token=bot.token,proxy_host=bot.proxyserver, proxy_port=bot.proxyport, log=False)
 def issuechecker():
-  msgs=client.getMessages(str(bot.channel), num=20)
-  msgs=json.loads(msgs.text)
-  owodes=0
-  for msgone in msgs:
+ try:
+   msgs=client.getMessages(str(bot.channel), num=20)
+   msgs=json.loads(msgs.text)
+   owodes=0
+   for msgone in msgs:
     if msgone['author']['id']==str(bot.owoid):
       owodes=owodes+1
       msgonec=msgone['content']
-      if "DM me with only" in (msgonec):
+      if "DM me with only" in msgonec:
           return "exit"
-      if "(2/5)" in (msgonec):
+      if "(2/5)" in msgonec:
           return "exit"
-      if "(3/5)" in (msgonec):
+      if "(3/5)" in msgonec:
           return "exit"
-      if "(4/5)" in (msgonec):
+      if "(4/5)" in msgonec:
           return "exit"
-      if "(5/5)" in (msgonec):
+      if "(5/5)" in msgonec:
           return "exit"
       if 'banned' in msgonec:
           print(f'{at()}{bot.color.fail} !!! [BANNED] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on the Support Discord server')
@@ -128,7 +129,12 @@ def issuechecker():
           return "exit"
       if not owodes:
           return "exit"
+ except TypeError:
+    print("[ERROR] Wrong token or channel ID!")
+    time.sleep(3)
+    exit()
 def issuechecker2():
+  try:
       msgs=client.getMessages(str(bot.channel2), num=1)
       msgs=json.loads(msgs.text)
       owodes=0
@@ -146,6 +152,12 @@ def issuechecker2():
           pass
       if 'I have verified that you are human! Thank you! :3' in msgonec:
           return "nocap"
+  except TypeError:
+    print("[ERROR] Wrong token or channel ID!")
+    time.sleep(3)
+    exit()
+
+
 
 def security():
         if issuechecker() == "exit":
