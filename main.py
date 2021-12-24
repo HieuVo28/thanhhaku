@@ -17,7 +17,7 @@ once=False
 wbm=[12,16]
 update = 0
 class bot:
-  owoid=408785106942164992 #user id of the owo bot
+  owoid=408785106942164992#user id of the owo bot
 
   with open('settings.json', "w+") as file:
     try:
@@ -130,10 +130,8 @@ def issuechecker():
       if not owodes:
           return "exit"
  except TypeError:
-    print("[ERROR] Wrong token or channel ID!")
-    report_error("[Error] Wrong token or channel ID")
-    time.sleep(3)
-    exit()
+    pass
+
 def issuechecker2():
   try:
       msgs=client.getMessages(str(bot.channel2), num=1)
@@ -154,12 +152,7 @@ def issuechecker2():
       if 'I have verified that you are human! Thank you! :3' in msgonec:
           return "nocap"
   except TypeError:
-    print("[ERROR] Wrong token or channel ID!")
-    report_error("[Error] Wrong token or channel ID")
-    time.sleep(3)
-    exit()
-
-
+    pass
 
 def security():
         if issuechecker() == "exit":
