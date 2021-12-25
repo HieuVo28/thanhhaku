@@ -98,34 +98,34 @@ def issuechecker():
       msgonec=msgone['content']
       if "DM me with only" in msgonec:
           return "exit"
-      if "(2/5)" in msgonec:
+      if "(2/5)" in str(msgonec):
           return "exit"
-      if "(3/5)" in msgonec:
+      if "(3/5)" in str(msgonec):
           return "exit"
-      if "(4/5)" in msgonec:
+      if "(4/5)" in str(msgonec):
           return "exit"
-      if "(5/5)" in msgonec:
+      if "(5/5)" in str(msgonec):
           return "exit"
-      if 'banned' in msgonec:
+      if 'banned' in str(msgonec):
           print(f'{at()}{bot.color.fail} !!! [BANNED] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on the Support Discord server')
           return "exit"
-      if 'complete your captcha' in msgonec:
+      if 'complete your captcha' in str(msgonec):
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED {msgonec[-6:]}')
           return "exit"
-      if 'If you have trouble solving the captcha, please ask us in our support guild!' in msgonec:
+      if 'If you have trouble solving the captcha, please ask us in our support guild!' in str(msgonec):
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED')
           return "exit"
-      if 'captcha' in msgonec:
+      if 'captcha' in str(msgonec):
           return "exit"
-      if 'Beep Boop.' in msgonec:
+      if 'Beep Boop.' in str(msgonec):
           return "exit"
-      if 'verify that you are human!' in msgonec:
+      if 'verify that you are human!' in str(msgonec):
           return "exit"
-      if 'to check that you are a human!' in msgonec:
+      if 'to check that you are a human!' in str(msgonec):
           return "exit"
-      if '⚠️' in msgonec:
+      if '⚠️' in str(msgonec):
           return "exit"
-      if 'Please DM me with only the following' in msgonec:
+      if 'Please DM me with only the following' in str(msgonec):
           return "exit"
       if not owodes:
           return "exit"
@@ -141,15 +141,15 @@ def issuechecker2():
        if msgone['author']['id']==str(bot.owoid):
           owodes=owodes+1
       msgonec=msgone['content']
-      if 'Are you a real human?' in msgonec:
+      if 'Are you a real human?' in str(msgonec):
           return "exit"
-      if 'http://verify.owobot.com' in msgonec:
+      if 'http://verify.owobot.com' in str(msgonec):
           return "exit"
-      if '?' in msgonec:
+      if '?' in str(msgonec):
           return "exit"
       if not owodes:
           pass
-      if 'I have verified that you are human! Thank you! :3' in msgonec:
+      if 'I have verified that you are human! Thank you! :3' in str(msgonec):
           return "nocap"
   except TypeError:
     pass
