@@ -89,7 +89,7 @@ def report_error(content):
 client=discum_c844aef.Client(token=bot.token,proxy_host=bot.proxyserver, proxy_port=bot.proxyport, log=False)
 def issuechecker():
  try:
-   msgs=client.getMessages(str(bot.channel), num=20)
+   msgs=client.getMessages(str(bot.channel), num=10)
    msgs=json.loads(msgs.text)
    owodes=0
    for msgone in msgs:
@@ -134,7 +134,7 @@ def issuechecker():
 
 def issuechecker2():
   try:
-      msgs=client.getMessages(str(bot.channel2), num=1)
+      msgs=client.getMessages(str(bot.channel2), num=5)
       msgs=json.loads(msgs.text)
       owodes=0
       for msgone in msgs:
