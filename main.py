@@ -1,3 +1,4 @@
+from json.decoder import JSONDecodeError
 import discum_c844aef
 import time
 import multiprocessing
@@ -8,6 +9,26 @@ import os
 from functools import cache
 
 from discum_c844aef.discum import Client
+if os.name == 'linux':
+  import simplejson as json
+if os.name == 'nt':
+  input("Your os is Windows right? (YES/NO): ")
+  if input == 'YES':
+    pass
+  if input == 'NO':
+    import simplejson as json
+    import json
+else:
+  import simplejson as json
+  import json
+ 
+print("""\
+░█████╗░░██╗░░░░░░░██╗░█████╗░  ░██████╗███████╗██╗░░░░░███████╗  ██████╗░░█████╗░████████╗
+██╔══██╗░██║░░██╗░░██║██╔══██╗  ██╔════╝██╔════╝██║░░░░░██╔════╝  ██╔══██╗██╔══██╗╚══██╔══╝
+██║░░██║░╚██╗████╗██╔╝██║░░██║  ╚█████╗░█████╗░░██║░░░░░█████╗░░  ██████╦╝██║░░██║░░░██║░░░
+██║░░██║░░████╔═████║░██║░░██║  ░╚═══██╗██╔══╝░░██║░░░░░██╔══╝░░  ██╔══██╗██║░░██║░░░██║░░░
+╚█████╔╝░░╚██╔╝░╚██╔╝░╚█████╔╝  ██████╔╝███████╗███████╗██║░░░░░  ██████╦╝╚█████╔╝░░░██║░░░
+░╚════╝░░░░╚═╝░░░╚═╝░░░╚════╝░  ╚═════╝░╚══════╝╚══════╝╚═╝░░░░░  ╚═════╝░░╚════╝░░░░╚═╝░░░""")
 try:
   from tkinter import messagebox
   use_terminal=False
@@ -17,10 +38,8 @@ once=False
 wbm=[12,16]
 update = 0
 class bot:
-  owoid=408785106942164992#user id of the owo bot
-
-  with open('settings.json', "w+") as file:
-    try:
+  owoid=644856987300921344#user id of the owo bot
+  with open('settings.json', "r") as file:
       data = json.load(file)
       token = data["token"]
       channel = data["channel"]
@@ -28,14 +47,25 @@ class bot:
       proxy = data["proxy"]
       proxyserver = data["proxy_"]["server"]
       proxyport = data["proxy_"]["port"]
-    except:
-      temp={}
-      temp["token"] = input("please enter your dc token for once: ")
-      temp["channel"] = input("please enter the id of the channel: ")
-      temp["owodmid"] = input("please enter the id of the owo dms channel(leave empty if you don't want to use it): ")
-      if temp["owodmid"].upper() == " ":
+  print('=========================')
+  print('|                       |')
+  print('| [1] Load data         |')
+  print('| [2] Create new data   |')
+  print('|                       |')
+  print('========================')
+  time.sleep(2)
+  input("Select option: ")
+  if input == '1':
+    pass
+  if input == '2':
+   with open('settings.json', "w") as file:
+     temp={}
+     temp["token"] = input("please enter your token for once: ")
+     temp["channel"] = input("please enter the id of the channel: ")
+     temp["owodmid"] = input("please enter the id of the owo dms channel(leave empty if you don't want to use it): ")
+     if temp["owodmid"].upper() == " ":
         pass
-      while True:
+     while True:
         temp["proxy"] = input("will you use proxy? [YES/NO]")
         temp["proxy_"] = {}
         if temp["proxy"].upper() == "YES":
@@ -46,13 +76,13 @@ class bot:
           temp["proxy_"]["server"] = None
           temp["proxy_"]["port"] = None
           break
-      json.dump(temp, file)
-      token = temp["token"]
-      channel = temp["channel"]
-      channel2 = temp["owodmid"]
-      proxy = temp["proxy"]
-      proxyserver = temp["proxy_"]["server"]
-      proxyport = temp["proxy_"]["port"]
+     json.dump(temp, file)
+     token = temp["token"]
+     channel = temp["channel"]
+     channel2 = temp["owodmid"]
+     proxy = temp["proxy"]
+     proxyserver = temp["proxy_"]["server"]
+     proxyport = temp["proxy_"]["port"]
   commands=[
     "owo hunt",
     "owo hunt",
@@ -89,9 +119,9 @@ def report_error(content):
 client=discum_c844aef.Client(token=bot.token,proxy_host=bot.proxyserver, proxy_port=bot.proxyport, log=False)
 def issuechecker():
  try:
-   msgs=client.getMessages(str(bot.channel), num=10)
+   msgs=client.getMessages(str(bot.channel),num=10)
    msgs=json.loads(msgs.text)
-   owodes=0
+   owodes=0 
    for msgone in msgs:
     if msgone['author']['id']==str(bot.owoid):
       owodes=owodes+1
@@ -106,26 +136,26 @@ def issuechecker():
           return "exit"
       if "(5/5)" in str(msgonec):
           return "exit"
-      if 'banned' in str(msgonec):
+      if 'banned' in msgonec:
           print(f'{at()}{bot.color.fail} !!! [BANNED] !!! {bot.color.reset} your account have been banned from owo bot please open a issue on the Support Discord server')
           return "exit"
-      if 'complete your captcha' in str(msgonec):
+      if 'complete your captcha' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED {msgonec[-6:]}')
           return "exit"
-      if 'If you have trouble solving the captcha, please ask us in our support guild!' in str(msgonec):
+      if 'If you have trouble solving the captcha, please ask us in our support guild!' in msgonec:
           print(f'{at()}{bot.color.warning} !! [CAPTCHA] !! {bot.color.reset} CAPTCHA   ACTION REQUİRED')
           return "exit"
-      if 'captcha' in str(msgonec):
+      if 'captcha' in msgonec:
           return "exit"
-      if 'Beep Boop.' in str(msgonec):
+      if 'Beep Boop.' in msgonec:
           return "exit"
-      if 'verify that you are human!' in str(msgonec):
+      if 'verify that you are human!' in msgonec:
           return "exit"
-      if 'to check that you are a human!' in str(msgonec):
+      if 'to check that you are a human!' in msgonec:
           return "exit"
-      if '⚠️' in str(msgonec):
+      if '⚠️' in msgonec:
           return "exit"
-      if 'Please DM me with only the following' in str(msgonec):
+      if 'Please DM me with only the following' in msgonec:
           return "exit"
       if not owodes:
           return "exit"
@@ -134,25 +164,39 @@ def issuechecker():
 
 def issuechecker2():
   try:
-      msgs=client.getMessages(str(bot.channel2), num=5)
+      msgs=client.getMessages(str(bot.channel2),num=5)
       msgs=json.loads(msgs.text)
       owodes=0
       for msgone in msgs:
        if msgone['author']['id']==str(bot.owoid):
           owodes=owodes+1
       msgonec=msgone['content']
-      if 'Are you a real human?' in str(msgonec):
+      if 'Are you a real human?' in msgonec:
           return "exit"
-      if 'http://verify.owobot.com' in str(msgonec):
+      if 'http://verify.owobot.com' in msgonec:
           return "exit"
       if '?' in str(msgonec):
           return "exit"
       if not owodes:
           pass
-      if 'I have verified that you are human! Thank you! :3' in str(msgonec):
+      if 'I have verified that you are human! Thank you! :3' in msgonec:
           return "nocap"
   except TypeError:
     pass
+  except JSONDecodeError:
+    if os.name == 'nt':
+      pass
+    if os.name == 'Linux':
+      pass
+    else:
+      input("There is an error while running, do you want to ignore and continue? (YES/NO): ")
+      if input == 'YES':
+        pass
+      if input == 'NO':
+        print('\033[31m' + '[Exit] Cancelled')
+        time.sleep(2)
+        exit()
+
 
 def security():
         if issuechecker() == "exit":
