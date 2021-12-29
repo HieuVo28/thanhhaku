@@ -2,7 +2,7 @@ Current version: 1.0.8
 Lastest version: 1.0.8
 
 -Change the menu a lot
--Make the load json data better (the crate new data is not working for now, fix soon. You can still enter information in settings.json)
+-Make the load json data better (the create new data is not working for now, fix soon. You can still enter information in settings.json)
 -Fixed stop when captcha a bit
 -Removed package discord from requirements.txt 
 -Make some change to support Linux and other OS 
