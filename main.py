@@ -38,7 +38,7 @@ once=False
 wbm=[12,16]
 update = 0
 class bot:
-  owoid=644856987300921344#user id of the owo bot
+  owoid=408785106942164992#user id of the owo bot
   with open('settings.json', "r") as file:
       data = json.load(file)
       token = data["token"]
